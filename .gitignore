@@ -275,3 +275,4 @@ facturation/media/
 .env
 .envs/*
 !.envs/.local/
+.env

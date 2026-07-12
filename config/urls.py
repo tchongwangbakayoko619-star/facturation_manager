@@ -7,6 +7,9 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    path("", include("facturation.dashboard.urls")),
+    path("clients/", include("facturation.clients.urls")),
+    path("factures/", include("facturation.invoices.urls")),
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
         "about/",
