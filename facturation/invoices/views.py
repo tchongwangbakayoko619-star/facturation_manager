@@ -1,27 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
-from django.shortcuts import render
-from django.urls import reverse
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DeleteView
-from django.views.generic import DetailView
-from django.views.generic import ListView
+from django.views.generic import DeleteView, DetailView, ListView
 
 from facturation.core.mixins import SuperuserRequiredMixin
 
-from .forms import InvoiceForm
-from .forms import InvoiceLineFormSet
+from .forms import InvoiceForm, InvoiceLineFormSet
 from .models import Invoice
 
 
 class InvoiceListView(LoginRequiredMixin, ListView):
-    """Page complète : liste des factures avec recherche live et pagination."""
-
     model = Invoice
     paginate_by = 15
     context_object_name = "invoices"
@@ -42,11 +34,6 @@ class InvoiceListView(LoginRequiredMixin, ListView):
 
 
 class InvoiceSearchView(InvoiceListView):
-    """
-    Même logique de filtrage que InvoiceListView, mais ne renvoie que le
-    fragment HTML (appelé en AJAX/HTMX depuis la barre de recherche).
-    """
-
     template_name = "invoices/_invoice_rows.html"
 
 
@@ -57,7 +44,7 @@ class InvoiceDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Invoice.objects.filter(owner=self.request.user).prefetch_related(
-            "lignes",
+            "lignes", "lignes__product"
         )
 
 
@@ -66,12 +53,12 @@ class InvoiceCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = InvoiceForm(owner=request.user)
-        formset = InvoiceLineFormSet()
+        formset = InvoiceLineFormSet(form_kwargs={"owner": request.user})
         return render(request, self.template_name, {"form": form, "formset": formset})
 
     def post(self, request):
         form = InvoiceForm(request.POST, owner=request.user)
-        formset = InvoiceLineFormSet(request.POST)
+        formset = InvoiceLineFormSet(request.POST, form_kwargs={"owner": request.user})
 
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
@@ -95,17 +82,17 @@ class InvoiceUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk):
         invoice = self.get_object(request, pk)
         form = InvoiceForm(instance=invoice, owner=request.user)
-        formset = InvoiceLineFormSet(instance=invoice)
+        formset = InvoiceLineFormSet(instance=invoice, form_kwargs={"owner": request.user})
         return render(
-            request,
-            self.template_name,
-            {"form": form, "formset": formset, "invoice": invoice},
+            request, self.template_name, {"form": form, "formset": formset, "invoice": invoice}
         )
 
     def post(self, request, pk):
         invoice = self.get_object(request, pk)
         form = InvoiceForm(request.POST, instance=invoice, owner=request.user)
-        formset = InvoiceLineFormSet(request.POST, instance=invoice)
+        formset = InvoiceLineFormSet(
+            request.POST, instance=invoice, form_kwargs={"owner": request.user}
+        )
 
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
@@ -115,9 +102,7 @@ class InvoiceUpdateView(LoginRequiredMixin, View):
             return redirect(reverse("invoices:detail", kwargs={"pk": invoice.pk}))
 
         return render(
-            request,
-            self.template_name,
-            {"form": form, "formset": formset, "invoice": invoice},
+            request, self.template_name, {"form": form, "formset": formset, "invoice": invoice}
         )
 
 
@@ -126,7 +111,9 @@ class InvoiceLineAddView(LoginRequiredMixin, View):
 
     def get(self, request):
         index = int(request.GET.get("index", 0))
-        empty_form = InvoiceLineFormSet(instance=Invoice()).empty_form
+        empty_form = InvoiceLineFormSet(
+            instance=Invoice(), form_kwargs={"owner": request.user}
+        ).empty_form
         empty_form.prefix = empty_form.prefix.replace("__prefix__", str(index))
         return render(request, "invoices/_line_row.html", {"form": empty_form})
 

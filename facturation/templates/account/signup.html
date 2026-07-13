@@ -1,0 +1,51 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n account static %}
+
+{% block head_title %}{% trans "Créer un compte" %}{% endblock %}
+
+{% block content %}
+  <div class="grid overflow-hidden rounded-3xl bg-white shadow-2xl shadow-slate-300/50 ring-1 ring-slate-200 md:grid-cols-2">
+    <section class="relative hidden min-h-[680px] flex-col justify-between overflow-hidden bg-blue-800 p-10 text-white md:flex">
+      <img src="{% static '19197292.jpg' %}" alt="{% trans 'Illustration de facturation' %}" class="absolute inset-0 h-full w-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-950/85 via-blue-800/65 to-indigo-900/75"></div>
+      <div class="relative">
+        <p class="text-3xl font-bold leading-tight">{% trans "Commencez à facturer avec sérénité." %}</p>
+        <p class="mt-4 max-w-sm text-sm leading-6 text-blue-100">{% trans "Créez votre compte pour simplifier votre gestion quotidienne." %}</p>
+      </div>
+      <p class="relative text-xs text-blue-200">© {% now "Y" %} Facturation</p>
+    </section>
+
+    <section class="flex min-h-[680px] items-center p-7 sm:p-12">
+      <div class="w-full">
+        <div class="mb-7 flex items-center gap-3">
+          <img src="{% static 'logo.png' %}" alt="CamerInvoice" class="h-12 w-12 rounded-xl object-cover shadow-md">
+          <span class="text-xl font-bold tracking-tight text-slate-900">CamerInvoice</span>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">{% trans "Créer un compte" %}</h1>
+        <p class="mt-2 text-sm text-slate-500">{% trans "Renseignez vos informations pour démarrer." %}</p>
+        <form method="post" action="{% url 'account_signup' %}" class="mt-7 space-y-4">
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ form.non_field_errors }}</div>{% endif %}
+          <div>
+            <label for="id_email" class="mb-1.5 block text-sm font-semibold text-slate-700">{% trans "Adresse e-mail" %}</label>
+            <input id="id_email" name="email" type="email" value="{{ form.email.value|default:'' }}" autocomplete="email" required placeholder="nom@entreprise.com" class="block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+            {% for error in form.email.errors %}<p class="mt-1.5 text-xs text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_password1" class="mb-1.5 block text-sm font-semibold text-slate-700">{% trans "Mot de passe" %}</label>
+            <input id="id_password1" name="password1" type="password" autocomplete="new-password" required class="block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+            {% for error in form.password1.errors %}<p class="mt-1.5 text-xs text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="id_password2" class="mb-1.5 block text-sm font-semibold text-slate-700">{% trans "Confirmer le mot de passe" %}</label>
+            <input id="id_password2" name="password2" type="password" autocomplete="new-password" required class="block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+            {% for error in form.password2.errors %}<p class="mt-1.5 text-xs text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+          {{ redirect_field }}
+          <button type="submit" class="mt-2 w-full rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200">{% trans "Créer mon compte" %}</button>
+        </form>
+        <p class="mt-6 text-center text-sm text-slate-600">{% trans "Vous avez déjà un compte ?" %} <a href="{{ login_url }}" class="font-semibold text-blue-700 hover:text-blue-600">{% trans "Se connecter" %}</a></p>
+      </div>
+    </section>
+  </div>
+{% endblock %}

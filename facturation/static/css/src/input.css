@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* Configuration de votre thème personnalisé (Optionnel) */
+@theme {
+  /* Exemple : Ajouter une couleur bleue propre à votre marque */
+  --color-brand-primary: #1d4ed8; 
+  --color-brand-secondary: #4f46e5;
+}
+
+/* Vos styles CSS personnalisés ou spécifiques (Optionnel) */
+@layer base {
+  /* Si vous souhaitez appliquer des styles par défaut à certaines balises */
+  body {
+    @apply antialiased text-gray-900;
+  }
+}
