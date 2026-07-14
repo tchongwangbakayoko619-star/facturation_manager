@@ -1,15 +1,91 @@
 {% load i18n %}
 <header class="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90 sm:px-6 lg:px-8">
-  <div class="flex min-w-0 items-center gap-3">
-    <button id="sidebar-toggle" class="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-slate-800 dark:hover:text-white md:hidden" aria-label="Ouvrir le menu">
-      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
-    </button>
-    <div class="min-w-0"><h1 class="truncate text-lg font-bold tracking-tight text-slate-900 dark:text-white">{% block page_title %}{% translate "Espace de gestion" %}{% endblock %}</h1><p class="hidden text-xs text-slate-500 sm:block">{% translate "Pilotez votre activité en un coup d’œil" %}</p></div>
-  </div>
-  <div class="flex items-center gap-1.5 sm:gap-2">
-    <a href="{% url 'invoices:create' %}" class="hidden items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:inline-flex"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>{% translate "Nouvelle facture" %}</a>
-    <button id="fullscreen-toggle" class="hidden rounded-xl p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white sm:inline-flex" title="{% translate 'Plein écran' %}" aria-label="{% translate 'Activer le plein écran' %}"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M21 16v3a2 2 0 0 1-2 2h-3" stroke-linecap="round"/></svg></button>
-    <div class="relative"><button id="theme-toggle" class="rounded-xl p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" title="{% translate 'Apparence' %}" aria-label="{% translate 'Choisir l’apparence' %}" aria-expanded="false"><svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke-linecap="round"/></svg><svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" stroke-linejoin="round"/></svg></button><div id="theme-menu" class="absolute right-0 top-full z-30 mt-2 hidden w-44 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900" role="menu"><button data-theme-value="light" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"><span>☀</span>{% translate "Mode clair" %}</button><button data-theme-value="dark" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"><span>☾</span>{% translate "Mode sombre" %}</button><button data-theme-value="system" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"><span>◐</span>{% translate "Selon l’appareil" %}</button></div></div>
-    <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">{% csrf_token %}<input name="next" type="hidden" value="{{ request.get_full_path }}"><label class="sr-only" for="language-select">Langue</label><select id="language-select" name="language" class="cursor-pointer rounded-xl border-0 bg-transparent py-2.5 pl-2 pr-7 text-sm font-semibold text-slate-600 outline-none transition hover:bg-slate-100 focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800" onchange="this.form.submit()">{% get_current_language as CURRENT_LANGUAGE %}{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}<option value="{{ language_code }}"{% if language_code == CURRENT_LANGUAGE %} selected{% endif %}>{{ language_name }}</option>{% endfor %}</select></form>
-  </div>
+    <div class="flex min-w-0 items-center gap-3">
+        <button id="sidebar-toggle"
+                class="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-slate-800 dark:hover:text-white md:hidden"
+                aria-label="Ouvrir le menu">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+            </svg>
+        </button>
+        <div class="min-w-0">
+            <h1 class="truncate text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                {% block page_title %}
+                    {% translate "Espace de gestion" %}
+                {% endblock %}
+            </h1>
+            <p class="hidden text-xs text-slate-500 sm:block">
+                {% translate "Pilotez votre activité en un coup d’œil" %}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-1.5 sm:gap-2">
+        <a href="{% url 'invoices:create' %}"
+           class="hidden items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:inline-flex">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+            </svg>
+            {% translate "Nouvelle facture" %}
+        </a>
+
+        <button id="fullscreen-toggle"
+                class="hidden rounded-xl p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white sm:inline-flex"
+                title="{% translate 'Plein écran' %}"
+                aria-label="{% translate 'Activer le plein écran' %}">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M21 16v3a2 2 0 0 1-2 2h-3" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <div class="relative">
+            <button id="theme-toggle"
+                    class="rounded-xl p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                    title="{% translate 'Apparence' %}"
+                    aria-label="{% translate 'Choisir l’apparence' %}"
+                    aria-expanded="false">
+                <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke-linecap="round"/>
+                </svg>
+                <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div id="theme-menu"
+                 class="absolute right-0 top-full z-30 mt-2 hidden w-44 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900"
+                 role="menu">
+                <button data-theme-value="light"
+                        class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <span>☀</span>{% translate "Mode clair" %}
+                </button>
+                <button data-theme-value="dark"
+                        class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <span>☾</span>{% translate "Mode sombre" %}
+                </button>
+                <button data-theme-value="system"
+                        class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <span>◐</span>{% translate "Selon l’appareil" %}
+                </button>
+            </div>
+        </div>
+
+        <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            <label class="sr-only" for="language-select">Langue</label>
+            <select id="language-select"
+                    name="language"
+                    class="cursor-pointer rounded-xl border-0 bg-transparent py-2.5 pl-2 pr-7 text-sm font-semibold text-slate-600 outline-none transition hover:bg-slate-100 focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800"
+                    onchange="this.form.submit()">
+                {% get_current_language as CURRENT_LANGUAGE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for language_code, language_name in LANGUAGES %}
+                    <option value="{{ language_code }}"{% if language_code == CURRENT_LANGUAGE %} selected{% endif %}>
+                        {{ language_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
 </header>

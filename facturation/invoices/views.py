@@ -1,17 +1,21 @@
+import os
 from collections import defaultdict
 from decimal import Decimal
 from io import BytesIO
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DeleteView, DetailView, ListView
+from xhtml2pdf import pisa
 
 from facturation.core.mixins import SuperuserRequiredMixin
 from facturation.products.models import Product
@@ -67,65 +71,58 @@ def restore_invoice_stock(invoice):
         product.save(update_fields=["stock", "updated_at"])
 
 
-def _pdf_text(value):
-    """Escape a string for the small, dependency-free PDF renderer."""
-    text = str(value).replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
-    return text.encode("latin-1", "replace").decode("latin-1")
+def link_callback(uri, rel):
+    """
+    Convertit les URIs HTML statiques/médias en chemins système absolus
+    pour que xhtml2pdf puisse y accéder localement sur la machine.
+    """
+    # Récupération des configurations statiques de Django
+    s_url = settings.STATIC_URL      # Généralement '/static/'
+    s_root = settings.STATIC_ROOT    # Dossier où collectstatic rassemble les fichiers
+    m_url = settings.MEDIA_URL       # Généralement '/media/'
+    m_root = settings.MEDIA_ROOT     # Dossier des fichiers téléversés
+
+    # Résolution du chemin physique selon le préfixe de l'URI
+    if uri.startswith(m_url):
+        path = os.path.join(m_root, uri.replace(m_url, ""))
+    elif uri.startswith(s_url):
+        path = os.path.join(s_root, uri.replace(s_url, ""))
+    else:
+        # Fallback pour les chemins relatifs bruts du projet
+        path = os.path.join(settings.BASE_DIR, uri)
+
+    # Si le fichier n'existe pas, on tente de le chercher directement dans le dossier "facturation"
+    if not os.path.isfile(path):
+        alternative_path = os.path.join(settings.BASE_DIR, "facturation", uri.lstrip("/"))
+        if os.path.isfile(alternative_path):
+            path = alternative_path
+
+    return path
 
 
 def _invoice_pdf(invoice):
-    """Create a basic PDF invoice without requiring a system PDF binary."""
-    lines = [
-        f"FACTURE {invoice.reference}",
-        f"Client : {invoice.client}",
-        f"Date d'emission : {invoice.date_emission}    Echeance : {invoice.date_echeance}",
-        f"Statut : {invoice.get_status_display()}",
-        "",
-        "Description                              Qte       Prix        Montant",
-        "-" * 78,
-    ]
-    for line in invoice.lignes.all():
-        description = str(line.description)[:38]
-        lines.append(
-            f"{description:<40} {line.quantite:>6}  {line.prix_unitaire:>10}  {line.montant:>10}"
-        )
-    lines.extend(["-" * 78, f"TOTAL : {invoice.montant_total}"])
-    if invoice.notes:
-        lines.extend(["", "Notes :", str(invoice.notes)])
-
-    commands = ["BT", "/F1 11 Tf", "50 790 Td", "14 TL"]
-    for index, line in enumerate(lines):
-        if index:
-            commands.append("T*")
-        commands.append(f"({_pdf_text(line)}) Tj")
-    commands.append("ET")
-    stream = "\n".join(commands).encode("latin-1", "replace")
-    objects = [
-        b"<< /Type /Catalog /Pages 2 0 R >>",
-        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        (
-            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
-            b"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>"
-        ),
-        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-        b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream",
-    ]
+    """
+    Generate an elegant PDF using the HTML template invoices/invoice_pdf.html
+    rendered via xhtml2pdf.
+    """
+    context = {
+        "invoice": invoice,
+    }
+    # Rendu du template HTML
+    html_string = render_to_string("invoices/invoice_pdf.html", context)
+    
     output = BytesIO()
-    output.write(b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n")
-    offsets = [0]
-    for index, obj in enumerate(objects, start=1):
-        offsets.append(output.tell())
-        output.write(f"{index} 0 obj\n".encode())
-        output.write(obj)
-        output.write(b"\nendobj\n")
-    xref_offset = output.tell()
-    output.write(f"xref\n0 {len(objects) + 1}\n".encode())
-    output.write(b"0000000000 65535 f \n")
-    for offset in offsets[1:]:
-        output.write(f"{offset:010} 00000 n \n".encode())
-    output.write(
-        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref_offset}\n%%EOF".encode()
+    # Utilisation du callback pour résoudre les images locales comme le logo
+    pisa_status = pisa.CreatePDF(
+        src=html_string,
+        dest=output,
+        encoding="utf-8",
+        link_callback=link_callback
     )
+    
+    if pisa_status.err:
+        raise ValidationError(_("Erreur lors de la génération du rendu PDF."))
+        
     return output.getvalue()
 
 

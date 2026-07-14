@@ -1,15 +1,29 @@
 {% load i18n %}
 {% if is_paginated %}
-  <nav class="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 text-sm dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between" aria-label="Pagination">
-    <p class="text-slate-500">{% blocktranslate with current=page_obj.number total=paginator.num_pages %}Page {{ current }} sur {{ total }}{% endblocktranslate %}</p>
-    <div class="flex items-center gap-2">
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status|urlencode }}{% endif %}" class="rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">← {% translate "Précédent" %}</a>
-      {% endif %}
-      <span class="rounded-lg bg-blue-50 px-3 py-2 font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">{{ page_obj.number }}</span>
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status|urlencode }}{% endif %}" class="rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">{% translate "Suivant" %} →</a>
-      {% endif %}
-    </div>
-  </nav>
+    <nav class="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 text-sm dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between" aria-label="Pagination">
+        <p class="text-slate-500">
+            {% blocktranslate with current=page_obj.number total=paginator.num_pages %}
+                Page {{ current }} sur {{ total }}
+            {% endblocktranslate %}
+        </p>
+        <div class="flex items-center gap-2">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status|urlencode }}{% endif %}"
+                   class="rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                    ← {% translate "Précédent" %}
+                </a>
+            {% endif %}
+
+            <span class="rounded-lg bg-blue-50 px-3 py-2 font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+                {{ page_obj.number }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status|urlencode }}{% endif %}"
+                   class="rounded-lg border border-slate-300 px-3 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                    {% translate "Suivant" %} →
+                </a>
+            {% endif %}
+        </div>
+    </nav>
 {% endif %}
