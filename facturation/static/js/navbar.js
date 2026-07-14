@@ -1,0 +1,47 @@
+import { $, $$ } from "./utils/helpers.js";
+
+export function initNavbar() {
+  const sidebar = $("#sidebar");
+  const backdrop = $("#sidebar-backdrop");
+  const setSidebar = (open) => {
+    sidebar?.classList.toggle("-translate-x-full", !open);
+    backdrop?.classList.toggle("hidden", !open);
+    document.body.classList.toggle("overflow-hidden", open);
+  };
+  $("#sidebar-toggle")?.addEventListener("click", () => setSidebar(sidebar?.classList.contains("-translate-x-full")));
+  backdrop?.addEventListener("click", () => setSidebar(false));
+  $$("#sidebar a").forEach((link) => link.addEventListener("click", () => setSidebar(false)));
+  const themeToggle = $("#theme-toggle");
+  const themeMenu = $("#theme-menu");
+  const applyTheme = (theme) => {
+    const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.classList.toggle("dark", dark);
+    if (theme === "system") localStorage.removeItem("color-theme");
+    else localStorage.setItem("color-theme", theme);
+  };
+  themeToggle?.addEventListener("click", () => {
+    const isOpen = !themeMenu?.classList.contains("hidden");
+    themeMenu?.classList.toggle("hidden", isOpen);
+    themeToggle.setAttribute("aria-expanded", String(!isOpen));
+  });
+  $$('[data-theme-value]').forEach((button) => button.addEventListener("click", () => {
+    applyTheme(button.dataset.themeValue);
+    themeMenu?.classList.add("hidden");
+    themeToggle?.setAttribute("aria-expanded", "false");
+  }));
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("#theme-toggle, #theme-menu")) {
+      themeMenu?.classList.add("hidden");
+      themeToggle?.setAttribute("aria-expanded", "false");
+    }
+  });
+  $("#fullscreen-toggle")?.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      // Le navigateur ou l'intégration actuelle peut interdire le plein écran.
+    }
+  });
+  $$('[data-alert-close]').forEach((button) => button.addEventListener("click", () => button.closest("[role='alert']")?.remove()));
+}

@@ -1,5 +1,6 @@
 from django import forms
 
+from .models import Category
 from .models import Product
 
 INPUT_CLASS = (
@@ -11,9 +12,10 @@ INPUT_CLASS = (
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["nom", "description", "image", "prix_unitaire", "gere_stock", "stock", "actif"]
+        fields = ["nom", "category", "description", "image", "prix_unitaire", "gere_stock", "stock", "actif"]
         widgets = {
             "nom": forms.TextInput(attrs={"class": INPUT_CLASS}),
+            "category": forms.Select(attrs={"class": INPUT_CLASS}),
             "description": forms.Textarea(attrs={"class": INPUT_CLASS, "rows": 3}),
             "image": forms.ClearableFileInput(attrs={
                 "class": "block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 "
@@ -23,6 +25,11 @@ class ProductForm(forms.ModelForm):
             "prix_unitaire": forms.NumberInput(attrs={"class": INPUT_CLASS, "step": "0.01", "min": "0"}),
             "stock": forms.NumberInput(attrs={"class": INPUT_CLASS, "min": "0"}),
         }
+
+    def __init__(self, *args, owner=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if owner is not None:
+            self.fields["category"].queryset = Category.objects.filter(owner=owner)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,3 +46,13 @@ class ProductForm(forms.ModelForm):
         if image and hasattr(image, "size") and image.size > 5 * 1024 * 1024:
             raise forms.ValidationError("L'image ne doit pas dépasser 5 Mo.")
         return image
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["nom", "description"]
+        widgets = {
+            "nom": forms.TextInput(attrs={"class": INPUT_CLASS}),
+            "description": forms.Textarea(attrs={"class": INPUT_CLASS, "rows": 3}),
+        }

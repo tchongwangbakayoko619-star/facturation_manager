@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path("", include("facturation.dashboard.urls")),
     path("clients/", include("facturation.clients.urls")),
+    path("produits/", include("facturation.products.urls")),
     path("factures/", include("facturation.invoices.urls")),
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
@@ -21,6 +22,7 @@ urlpatterns = [
     # User management
     path("users/", include("facturation.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("i18n/", include("django.conf.urls.i18n")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files

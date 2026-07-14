@@ -8,7 +8,9 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView, V
 
 from facturation.core.mixins import OwnerRequiredMixin, SuperuserRequiredMixin
 
+from .forms import CategoryForm
 from .forms import ProductForm
+from .models import Category
 from .models import Product
 
 
@@ -22,7 +24,7 @@ class ProductListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
         qs = super().get_queryset()
         q = self.request.GET.get("q")
         if q:
-            qs = qs.filter(nom__icontains=q)
+            qs = qs.filter(nom__icontains=q) | qs.filter(category__nom__icontains=q)
         return qs
 
 
@@ -37,6 +39,11 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, _("Produit créé avec succès."))
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["owner"] = self.request.user
+        return kwargs
+
 
 class ProductUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = Product
@@ -47,6 +54,11 @@ class ProductUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, _("Produit mis à jour."))
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["owner"] = self.request.user
+        return kwargs
 
 
 class ProductDeleteView(SuperuserRequiredMixin, DeleteView):
@@ -75,3 +87,44 @@ class ProductDetailJSONView(LoginRequiredMixin, View):
                 "en_rupture": product.en_rupture,
             }
         )
+
+
+class CategoryListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
+    model = Category
+    context_object_name = "categories"
+    template_name = "products/category_list.html"
+    paginate_by = 15
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "products/category_form.html"
+    success_url = reverse_lazy("products:category_list")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        messages.success(self.request, _("Catégorie créée avec succès."))
+        return super().form_valid(form)
+
+
+class CategoryUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "products/category_form.html"
+    success_url = reverse_lazy("products:category_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Catégorie mise à jour."))
+        return super().form_valid(form)
+
+
+class CategoryDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
+    model = Category
+    template_name = "products/category_confirm_delete.html"
+    success_url = reverse_lazy("products:category_list")
+    context_object_name = "category"
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Catégorie supprimée."))
+        return super().form_valid(form)

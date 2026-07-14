@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Les classes dark: suivent le choix de l'utilisateur, pas seulement le thème système. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Configuration de votre thème personnalisé (Optionnel) */
 @theme {
   /* Exemple : Ajouter une couleur bleue propre à votre marque */

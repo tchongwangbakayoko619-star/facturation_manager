@@ -67,6 +67,18 @@ class InvoiceLineForm(forms.ModelForm):
             qs = qs.filter(owner=owner)
         product_field.queryset = qs
 
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get("product")
+        quantite = cleaned_data.get("quantite")
+        if product and product.gere_stock and quantite is not None:
+            if quantite <= 0:
+                self.add_error("quantite", "La quantité doit être supérieure à zéro.")
+            elif quantite != quantite.to_integral_value():
+                self.add_error(
+                    "quantite", "Un produit géré en stock doit avoir une quantité entière.")
+        return cleaned_data
+
 
 InvoiceLineFormSet = inlineformset_factory(
     Invoice,

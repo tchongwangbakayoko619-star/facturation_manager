@@ -1,0 +1,8 @@
+<tr>
+  {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+  <td class="px-5 py-4">{{ form.product }}{{ form.product.errors }}</td>
+  <td class="px-5 py-4">{{ form.description }}{{ form.description.errors }}</td>
+  <td class="px-5 py-4">{{ form.quantite }}{{ form.quantite.errors }}</td>
+  <td class="px-5 py-4">{{ form.prix_unitaire }}{{ form.prix_unitaire.errors }}</td>
+  <td class="px-5 py-4">{% if form.DELETE %}{{ form.DELETE }}{% endif %}</td>
+</tr>

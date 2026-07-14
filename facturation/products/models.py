@@ -8,12 +8,45 @@ def product_image_upload_path(instance, filename):
     return f"products/{instance.owner_id}/{filename}"
 
 
+class Category(models.Model):
+    """A product category owned by one user."""
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="categories",
+        verbose_name=_("propriétaire"),
+    )
+    nom = models.CharField(_("nom"), max_length=100)
+    description = models.TextField(_("description"), blank=True)
+    created_at = models.DateTimeField(_("créée le"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("catégorie")
+        verbose_name_plural = _("catégories")
+        ordering = ["nom"]
+        constraints = [
+            models.UniqueConstraint(fields=["owner", "nom"], name="unique_category_name_per_owner"),
+        ]
+
+    def __str__(self):
+        return self.nom
+
+
 class Product(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="products",
         verbose_name=_("propriétaire"),
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        related_name="products",
+        verbose_name=_("catégorie"),
+        null=True,
+        blank=True,
     )
     nom = models.CharField(_("nom"), max_length=150)
     description = models.TextField(_("description"), blank=True)
