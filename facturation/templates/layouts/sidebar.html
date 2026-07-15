@@ -13,7 +13,6 @@
     </div>
 
     <nav class="flex-1 space-y-1 p-4 text-sm font-medium">
-        <!-- Tableau de bord -->
         <a href="{% url 'dashboard:home' %}"
            class="flex items-center gap-3 rounded-xl px-4 py-3 {% if request.resolver_match.namespace == 'dashboard' %}bg-blue-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900{% endif %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -25,7 +24,6 @@
             {% translate "Tableau de bord" %}
         </a>
 
-        <!-- Factures -->
         <a href="{% url 'invoices:list' %}"
            class="flex items-center gap-3 rounded-xl px-4 py-3 {% if request.resolver_match.namespace == 'invoices' %}bg-blue-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900{% endif %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -35,7 +33,6 @@
             {% translate "Factures" %}
         </a>
 
-        <!-- Clients -->
         <a href="{% url 'clients:list' %}"
            class="flex items-center gap-3 rounded-xl px-4 py-3 {% if request.resolver_match.namespace == 'clients' %}bg-blue-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900{% endif %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -45,7 +42,6 @@
             {% translate "Clients" %}
         </a>
 
-        <!-- Produits -->
         <a href="{% url 'products:list' %}"
            class="flex items-center gap-3 rounded-xl px-4 py-3 {% if request.resolver_match.namespace == 'products' and request.resolver_match.url_name != 'category_list' and request.resolver_match.url_name != 'category_create' and request.resolver_match.url_name != 'category_update' and request.resolver_match.url_name != 'category_delete' %}bg-blue-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900{% endif %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -55,7 +51,6 @@
             {% translate "Produits" %}
         </a>
 
-        <!-- Catégories -->
         <a href="{% url 'products:category_list' %}"
            class="flex items-center gap-3 rounded-xl px-4 py-3 {% if request.resolver_match.url_name == 'category_list' or request.resolver_match.url_name == 'category_create' or request.resolver_match.url_name == 'category_update' or request.resolver_match.url_name == 'category_delete' %}bg-blue-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900{% endif %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

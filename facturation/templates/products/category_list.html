@@ -1,1 +1,57 @@
-{% extends "base.html" %}{% block title %}Catégories{% endblock %}{% block content %}<section class="flex items-end justify-between"><div><p class="text-sm font-semibold text-blue-600">Organisation du catalogue</p><h2 class="mt-1 text-3xl font-bold tracking-tight">Catégories</h2></div><a href="{% url 'products:category_create' %}" class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700">+ Nouvelle catégorie</a></section><section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"><div class="overflow-x-auto"><table class="w-full min-w-[600px] text-left text-sm"><thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-800/60"><tr><th class="px-6 py-4">Nom</th><th class="px-6 py-4">Description</th><th class="px-6 py-4">Produits</th><th class="px-6 py-4 text-right">Actions</th></tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-800">{% for category in categories %}<tr><td class="px-6 py-4 font-semibold">{{ category.nom }}</td><td class="px-6 py-4 text-slate-500">{{ category.description|default:"—" }}</td><td class="px-6 py-4">{{ category.products.count }}</td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-3"><a class="font-semibold text-blue-600 hover:text-blue-700" href="{% url 'products:category_update' category.pk %}">Modifier</a><a class="font-semibold text-rose-600 hover:text-rose-700" href="{% url 'products:category_delete' category.pk %}">Supprimer</a></div></td></tr>{% empty %}<tr><td colspan="4" class="px-6 py-12 text-center text-slate-500">Aucune catégorie.</td></tr>{% endfor %}</tbody></table></div>{% include "layouts/pagination.html" %}</section>{% endblock %}
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Catégories" %}{% endblock %}
+
+{% block content %}
+<section class="flex items-end justify-between">
+  <div>
+    <p class="text-sm font-semibold text-blue-600">{% trans "Organisation du catalogue" %}</p>
+    <h2 class="mt-1 text-3xl font-bold tracking-tight">{% trans "Catégories" %}</h2>
+  </div>
+  <a href="{% url 'products:category_create' %}" class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700">
+    {% trans "+ Nouvelle catégorie" %}
+  </a>
+</section>
+
+<section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[600px] text-left text-sm">
+      <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-800/60">
+        <tr>
+          <th class="px-6 py-4">{% trans "Nom" %}</th>
+          <th class="px-6 py-4">{% trans "Description" %}</th>
+          <th class="px-6 py-4">{% trans "Produits" %}</th>
+          <th class="px-6 py-4 text-right">{% trans "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for category in categories %}
+          <tr>
+            <td class="px-6 py-4 font-semibold">{{ category.nom }}</td>
+            <td class="px-6 py-4 text-slate-500">{{ category.description|default:"—" }}</td>
+            <td class="px-6 py-4">{{ category.products.count }}</td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-3">
+                <a class="font-semibold text-blue-600 hover:text-blue-700" href="{% url 'products:category_update' category.pk %}">
+                  {% trans "Modifier" %}
+                </a>
+                <a class="font-semibold text-rose-600 hover:text-rose-700" href="{% url 'products:category_delete' category.pk %}">
+                  {% trans "Supprimer" %}
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="px-6 py-12 text-center text-slate-500">
+              {% trans "Aucune catégorie." %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "layouts/pagination.html" %}
+</section>
+{% endblock %}

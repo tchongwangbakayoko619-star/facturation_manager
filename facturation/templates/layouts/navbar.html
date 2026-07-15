@@ -3,7 +3,7 @@
     <div class="flex min-w-0 items-center gap-3">
         <button id="sidebar-toggle"
                 class="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-slate-800 dark:hover:text-white md:hidden"
-                aria-label="Ouvrir le menu">
+                aria-label="{% translate 'Ouvrir le menu' %}">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
             </svg>
@@ -73,7 +73,7 @@
         <form action="{% url 'set_language' %}" method="post" class="hidden sm:block">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path }}">
-            <label class="sr-only" for="language-select">Langue</label>
+            <label class="sr-only" for="language-select">{% translate "Langue" %}</label>
             <select id="language-select"
                     name="language"
                     class="cursor-pointer rounded-xl border-0 bg-transparent py-2.5 pl-2 pr-7 text-sm font-semibold text-slate-600 outline-none transition hover:bg-slate-100 focus:ring-2 focus:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800"

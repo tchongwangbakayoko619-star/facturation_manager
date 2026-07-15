@@ -17,14 +17,26 @@ class InvoiceForm(forms.ModelForm):
         fields = ["client", "date_emission", "date_echeance", "status", "notes"]
         widgets = {
             "client": forms.Select(attrs={"class": INPUT_CLASS}),
-            "date_emission": forms.DateInput(attrs={"type": "date", "class": INPUT_CLASS}),
-            "date_echeance": forms.DateInput(attrs={"type": "date", "class": INPUT_CLASS}),
+            "date_emission": forms.DateInput(
+                attrs={"type": "date", "class": INPUT_CLASS}, format="%Y-%m-%d"
+            ),
+            "date_echeance": forms.DateInput(
+                attrs={"type": "date", "class": INPUT_CLASS}, format="%Y-%m-%d"
+            ),
             "status": forms.Select(attrs={"class": INPUT_CLASS}),
             "notes": forms.Textarea(attrs={"class": INPUT_CLASS, "rows": 3}),
         }
 
     def __init__(self, *args, owner=None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Force le format ISO (YYYY-MM-DD) en plus du format du widget :
+        # <input type="date"> exige ce format pour afficher la valeur, et le
+        # navigateur envoie aussi ce format au POST. Sans ça, la locale fr
+        # (jj/mm/aaaa) casse l'affichage ET peut casser la validation.
+        self.fields["date_emission"].input_formats = ["%Y-%m-%d"]
+        self.fields["date_echeance"].input_formats = ["%Y-%m-%d"]
+
         if owner is not None:
             client_field = self.fields["client"]
             client_field.queryset = client_field.queryset.model.objects.filter(owner=owner)
@@ -62,9 +74,18 @@ class InvoiceLineForm(forms.ModelForm):
         product_field = self.fields["product"]
         product_field.required = False
         product_field.empty_label = "— Aucun produit (saisie libre) —"
+
         qs = Product.objects.filter(actif=True)
         if owner is not None:
             qs = qs.filter(owner=owner)
+
+        # Si la ligne existante référence un produit désormais inactif (ou
+        # exclu par le filtre owner), on le réinjecte dans le queryset pour
+        # qu'il reste sélectionné à l'affichage au lieu d'apparaître vide.
+        current_product_id = self.instance.product_id if self.instance and self.instance.pk else None
+        if current_product_id and not qs.filter(pk=current_product_id).exists():
+            qs = qs | Product.objects.filter(pk=current_product_id)
+
         product_field.queryset = qs
 
     def clean(self):

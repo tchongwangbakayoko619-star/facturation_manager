@@ -1,12 +1,43 @@
 {% load i18n %}
 {% if messages %}
-  <div class="space-y-3" aria-live="polite">
-    {% for message in messages %}
-      <div class="flex items-start gap-3 rounded-xl border px-4 py-3 text-sm {% if 'error' in message.tags %}border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200{% elif 'warning' in message.tags %}border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200{% elif 'success' in message.tags %}border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200{% else %}border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-200{% endif %}" role="alert">
-        <span aria-hidden="true">{% if 'error' in message.tags %}✕{% elif 'warning' in message.tags %}!{% elif 'success' in message.tags %}✓{% else %}i{% endif %}</span>
-        <p class="flex-1">{{ message }}</p>
-        <button type="button" class="-mr-1 rounded p-1 opacity-70 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10" aria-label="{% translate 'Fermer' %}" data-alert-close>×</button>
-      </div>
-    {% endfor %}
-  </div>
+    <div class="space-y-3" aria-live="polite">
+        {% for message in messages %}
+            <div class="flex items-start gap-3 rounded-xl border px-4 py-3 text-sm 
+                        {% if 'error' in message.tags %}
+                            border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200
+                        {% elif 'warning' in message.tags %}
+                            border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200
+                        {% elif 'success' in message.tags %}
+                            border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200
+                        {% else %}
+                            border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-200
+                        {% endif %}" 
+                 role="alert">
+                
+                <!-- Icône -->
+                <span aria-hidden="true">
+                    {% if 'error' in message.tags %}
+                        ✕
+                    {% elif 'warning' in message.tags %}
+                        !
+                    {% elif 'success' in message.tags %}
+                        ✓
+                    {% else %}
+                        i
+                    {% endif %}
+                </span>
+                
+                <!-- Message -->
+                <p class="flex-1">{{ message }}</p>
+                
+                <!-- Bouton de fermeture -->
+                <button type="button"
+                        class="-mr-1 rounded p-1 opacity-70 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10"
+                        aria-label="{% translate 'Fermer' %}"
+                        data-alert-close>
+                    ×
+                </button>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}

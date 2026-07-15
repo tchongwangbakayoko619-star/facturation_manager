@@ -1,8 +1,10 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <title>Facture {{ invoice.reference }}</title>
+    <title>{% blocktrans with reference=invoice.reference %}Facture {{ reference }}{% endblocktrans %}</title>
     <style>
         /* Configuration de la page A4 compatible Python 3.14 */
         @page {
@@ -201,7 +203,7 @@
     </span>
 </td>
             <td class="invoice-title-container">
-                <h1 class="invoice-title">FACTURE</h1>
+                <h1 class="invoice-title">{% trans "FACTURE" %}</h1>
                 <div class="invoice-ref">{{ invoice.reference }}</div>
             </td>
         </tr>
@@ -211,18 +213,18 @@
         <tr>
             <td class="address-col">
                 <div class="address-card">
-                    <div class="address-label">Émetteur</div>
+                    <div class="address-label">{% trans "Émetteur" %}</div>
                     <div class="address-details">
-                        <strong>Gestion de CamerInvoice</strong><br>
+                        <strong>{% trans "Gestion de CamerInvoice" %}</strong><br>
                         123 Rue 3eme carrefour eveche<br>
                         Bafoussam, Cameroun<br>
-                        Email : camerinvoice@gmail.com
+                        {% trans "Email" %} : camerinvoice@gmail.com
                     </div>
                 </div>
             </td>
             <td class="address-col">
                 <div class="address-card">
-                    <div class="address-label">Facturé à</div>
+                    <div class="address-label">{% trans "Facturé à" %}</div>
                     <div class="address-details">
                         <strong>{{ invoice.client }}</strong><br>
                         {% if invoice.client.adresse %}
@@ -236,9 +238,9 @@
 
     <table class="meta-table">
         <tr>
-            <th>Date d'émission</th>
-            <th>Date d'échéance</th>
-            <th>Statut de paiement</th>
+            <th>{% trans "Date d'émission" %}</th>
+            <th>{% trans "Date d'échéance" %}</th>
+            <th>{% trans "Statut de paiement" %}</th>
         </tr>
         <tr>
             <td>{{ invoice.date_emission|date:"d/m/Y"|default:invoice.date_emission }}</td>
@@ -250,10 +252,10 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 45%;">Description</th>
-                <th class="text-right" style="width: 10%;">Qté</th>
-                <th class="text-right" style="width: 22%;">Prix Unitaire</th>
-                <th class="text-right" style="width: 23%;">Montant</th>
+                <th style="width: 45%;">{% trans "Description" %}</th>
+                <th class="text-right" style="width: 10%;">{% trans "Qté" %}</th>
+                <th class="text-right" style="width: 22%;">{% trans "Prix Unitaire" %}</th>
+                <th class="text-right" style="width: 23%;">{% trans "Montant" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -266,7 +268,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">Aucune ligne de facturation.</td>
+                    <td colspan="4" class="text-center">{% trans "Aucune ligne de facturation." %}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -274,21 +276,21 @@
 
     <table class="totals-table">
         <tr class="grand-total-row">
-            <td><strong>Total à payer</strong></td>
+            <td><strong>{% trans "Total à payer" %}</strong></td>
             <td class="text-right"><strong>{{ invoice.montant_total }} FCFA</strong></td>
         </tr>
     </table>
 
     {% if invoice.notes %}
         <div class="notes-section">
-            <div class="notes-title">Notes & conditions :</div>
+            <div class="notes-title">{% trans "Notes & conditions :" %}</div>
             <p class="notes-text">{{ invoice.notes|linebreaksbr }}</p>
         </div>
     {% endif %}
 
     <div class="footer">
         CamerInvoice — 123 Rue 3eme carrefour eveche, Bafoussam<br>
-        Pour toute assistance, contactez-nous à : <strong>camerinvoice@gmail.com</strong>
+        {% trans "Pour toute assistance, contactez-nous à" %} : <strong>camerinvoice@gmail.com</strong>
     </div>
 
 </body>

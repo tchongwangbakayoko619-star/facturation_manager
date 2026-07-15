@@ -1,10 +1,10 @@
-import calendar
 from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import DecimalField, F, Sum
 from django.db.models.functions import Coalesce, TruncMonth
 from django.http import JsonResponse
+from django.utils.formats import date_format
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -86,7 +86,7 @@ class RevenueByMonthJSONView(LoginRequiredMixin, View):
         data = []
         for i in range(self.MONTHS_RANGE):
             month_date = _add_months(start_date, i)
-            labels.append(f"{calendar.month_name[month_date.month]} {month_date.year}")
+            labels.append(date_format(month_date, "F Y"))
             data.append(float(totals_by_month.get(month_date, 0)))
 
         return JsonResponse({"labels": labels, "data": data})
@@ -104,8 +104,6 @@ class InvoiceStatusDistributionJSONView(LoginRequiredMixin, View):
     """
 
     def get(self, request):
-        # Comptage explicite pour garantir l'ordre et les libellés dans
-        # l'ordre défini par Invoice.Status, même si un statut a 0 facture.
         from django.db.models import Count
 
         raw_counts = dict(
@@ -114,7 +112,7 @@ class InvoiceStatusDistributionJSONView(LoginRequiredMixin, View):
             .annotate(count=Count("id"))
         )
 
-        labels = [label for _, label in Invoice.Status.choices]
+        labels = [str(label) for _, label in Invoice.Status.choices]
         data = [raw_counts.get(value, 0) for value, _ in Invoice.Status.choices]
 
         return JsonResponse({"labels": labels, "data": data})

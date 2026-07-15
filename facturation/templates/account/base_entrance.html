@@ -1,26 +1,27 @@
 {% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
-<html lang="fr" class="h-full bg-slate-50">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block head_title %}CamerInvoice{% endblock %} · CamerInvoice</title>
-    <link rel="stylesheet" href="{% static 'css/dist/output.css' %}">
-    {% block extra_head %}{% endblock %}
-  </head>
-  <body class="min-h-full bg-slate-50 font-sans text-slate-900 antialiased">
-    <main class="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div class="w-full max-w-5xl">
-        {% if messages %}
-          <div class="mb-4 space-y-3">
-            {% for message in messages %}
-              <div class="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">{{ message }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {% block content %}{% endblock %}
-      </div>
-    </main>
-    {% block extra_body %}{% endblock %}
-  </body> 
+<html lang="{{ LANGUAGE_CODE }}" class="h-full bg-slate-50">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block head_title %}{% trans "CamerInvoice" %}{% endblock %} · CamerInvoice</title>
+<link rel="stylesheet" href="{% static 'css/dist/output.css' %}">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-full bg-slate-50 font-sans text-slate-900 antialiased">
+<main class="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8">
+<div class="w-full max-w-5xl">
+{% if messages %}
+<div class="mb-4 space-y-3">
+{% for message in messages %}
+<div class="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+{% block content %}{% endblock %}
+</div>
+</main>
+{% block extra_body %}{% endblock %}
+</body>
 </html>

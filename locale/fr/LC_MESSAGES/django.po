@@ -1,0 +1,989 @@
+# Translations for the Facturation project
+# Copyright (C) 2026 tchongwang bakayoko
+# tchongwang bakayoko <tchongwangbakayoko619@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-15 10:02+0100\n"
+"PO-Revision-Date: 2026-07-15 09:49+0100\n"
+"Last-Translator: tchongwang bakayoko <tchongwangbakayoko619@gmail.com>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: config/settings/base.py:31
+msgid "Français"
+msgstr "Français"
+
+#: config/settings/base.py:32
+msgid "English"
+msgstr "English"
+
+#: facturation/clients/models.py:8
+#: facturation/templates/products/category_list.html:22
+msgid "Nom"
+msgstr "Nom"
+
+#: facturation/clients/models.py:9
+#: facturation/templates/invoices/invoice_pdf.html:221
+msgid "Email"
+msgstr "Email"
+
+#: facturation/clients/models.py:10
+#: facturation/templates/clients/client_list.html:28
+msgid "Téléphone"
+msgstr "Téléphone"
+
+#: facturation/clients/models.py:11
+#: facturation/templates/clients/client_detail.html:34
+msgid "Adresse"
+msgstr "Adresse"
+
+#: facturation/clients/models.py:12
+#: facturation/templates/clients/client_list.html:29
+msgid "Ville"
+msgstr "Ville"
+
+#: facturation/clients/models.py:13
+msgid "Code postal"
+msgstr "Code postal"
+
+#: facturation/clients/models.py:14
+msgid "Pays"
+msgstr "Pays"
+
+#: facturation/clients/models.py:20
+msgid "Propriétaire"
+msgstr "Propriétaire"
+
+#: facturation/clients/models.py:23
+msgid "Date de création"
+msgstr "Date de création"
+
+#: facturation/clients/models.py:24
+msgid "Date de modification"
+msgstr "Date de modification"
+
+#: facturation/clients/models.py:27
+#: facturation/templates/clients/client_list.html:26
+#: facturation/templates/dashboard/home.html:85
+#: facturation/templates/invoices/invoice_list.html:38
+msgid "Client"
+msgstr "Client"
+
+#: facturation/clients/models.py:28
+#: facturation/templates/clients/client_list.html:4
+#: facturation/templates/clients/client_list.html:10
+#: facturation/templates/layouts/sidebar.html:42
+msgid "Clients"
+msgstr "Clients"
+
+#: facturation/clients/views.py:46
+msgid "Client créé avec succès."
+msgstr "Client créé avec succès."
+
+#: facturation/clients/views.py:57
+msgid "Client mis à jour."
+msgstr "Client mis à jour."
+
+#: facturation/clients/views.py:67
+msgid "Client supprimé."
+msgstr "Client supprimé."
+
+#: facturation/invoices/models.py:14
+msgid "Brouillon"
+msgstr "Brouillon"
+
+#: facturation/invoices/models.py:15
+msgid "Envoyée"
+msgstr "Envoyée"
+
+#: facturation/invoices/models.py:16
+msgid "Payée"
+msgstr "Payée"
+
+#: facturation/invoices/models.py:17
+#: facturation/templates/dashboard/home.html:48
+msgid "En retard"
+msgstr "En retard"
+
+#: facturation/invoices/models.py:18
+msgid "Annulée"
+msgstr "Annulée"
+
+#: facturation/invoices/models.py:21 facturation/products/models.py:18
+#: facturation/products/models.py:41
+msgid "propriétaire"
+msgstr "propriétaire"
+
+#: facturation/invoices/models.py:24
+msgid "client"
+msgstr "client"
+
+#: facturation/invoices/models.py:26
+msgid "référence"
+msgstr "référence"
+
+#: facturation/invoices/models.py:27
+msgid "date d'émission"
+msgstr "date d'émission"
+
+#: facturation/invoices/models.py:28
+msgid "date d'échéance"
+msgstr "date d'échéance"
+
+#: facturation/invoices/models.py:30
+msgid "statut"
+msgstr "statut"
+
+#: facturation/invoices/models.py:32
+msgid "notes"
+msgstr "notes"
+
+#: facturation/invoices/models.py:33 facturation/products/models.py:22
+msgid "créée le"
+msgstr "créée le"
+
+#: facturation/invoices/models.py:34
+msgid "mise à jour le"
+msgstr "mise à jour le"
+
+#: facturation/invoices/models.py:37 facturation/invoices/models.py:59
+msgid "facture"
+msgstr "facture"
+
+#: facturation/invoices/models.py:38
+msgid "factures"
+msgstr "factures"
+
+#: facturation/invoices/models.py:65 facturation/products/models.py:72
+msgid "produit"
+msgstr "produit"
+
+#: facturation/invoices/models.py:68
+msgid "Optionnel : associe cette ligne à un produit du catalogue."
+msgstr "Optionnel : associe cette ligne à un produit du catalogue."
+
+#: facturation/invoices/models.py:71 facturation/products/models.py:21
+#: facturation/products/models.py:52
+msgid "description"
+msgstr "description"
+
+#: facturation/invoices/models.py:73 facturation/invoices/models.py:80
+msgid "Pré-rempli depuis le produit sélectionné, modifiable librement."
+msgstr "Pré-rempli depuis le produit sélectionné, modifiable librement."
+
+#: facturation/invoices/models.py:75
+msgid "quantité"
+msgstr "quantité"
+
+#: facturation/invoices/models.py:77 facturation/products/models.py:60
+msgid "prix unitaire"
+msgstr "prix unitaire"
+
+#: facturation/invoices/models.py:84
+msgid "ligne de facture"
+msgstr "ligne de facture"
+
+#: facturation/invoices/models.py:85
+msgid "lignes de facture"
+msgstr "lignes de facture"
+
+#: facturation/invoices/views.py:124
+msgid "Erreur lors de la génération du rendu PDF."
+msgstr "Erreur lors de la génération du rendu PDF."
+
+#: facturation/invoices/views.py:188
+msgid "Facture créée avec succès."
+msgstr "Facture créée avec succès."
+
+#: facturation/invoices/views.py:226
+msgid "Facture mise à jour."
+msgstr "Facture mise à jour."
+
+#: facturation/invoices/views.py:256
+msgid "Facture supprimée et stock restauré."
+msgstr "Facture supprimée et stock restauré."
+
+#: facturation/products/models.py:20 facturation/products/models.py:51
+msgid "nom"
+msgstr "nom"
+
+#: facturation/products/models.py:25 facturation/products/models.py:47
+msgid "catégorie"
+msgstr "catégorie"
+
+#: facturation/products/models.py:26
+msgid "catégories"
+msgstr "catégories"
+
+#: facturation/products/models.py:54
+msgid "image"
+msgstr "image"
+
+#: facturation/products/models.py:58
+msgid "Format recommandé : carré, 800x800px maximum."
+msgstr "Format recommandé : carré, 800x800px maximum."
+
+#: facturation/products/models.py:62
+msgid "gérer le stock"
+msgstr "gérer le stock"
+
+#: facturation/products/models.py:64
+msgid "Active le suivi de quantité disponible pour ce produit."
+msgstr "Active le suivi de quantité disponible pour ce produit."
+
+#: facturation/products/models.py:66
+msgid "stock disponible"
+msgstr "stock disponible"
+
+#: facturation/products/models.py:67
+msgid "actif"
+msgstr "actif"
+
+#: facturation/products/models.py:67
+msgid "Visible dans les listes de sélection."
+msgstr "Visible dans les listes de sélection."
+
+#: facturation/products/models.py:68
+msgid "créé le"
+msgstr "créé le"
+
+#: facturation/products/models.py:69
+msgid "mis à jour le"
+msgstr "mis à jour le"
+
+#: facturation/products/models.py:73
+msgid "produits"
+msgstr "produits"
+
+#: facturation/products/views.py:39
+msgid "Produit créé avec succès."
+msgstr "Produit créé avec succès."
+
+#: facturation/products/views.py:55
+msgid "Produit mis à jour."
+msgstr "Produit mis à jour."
+
+#: facturation/products/views.py:70
+msgid "Produit supprimé."
+msgstr "Produit supprimé."
+
+#: facturation/products/views.py:107
+msgid "Catégorie créée avec succès."
+msgstr "Catégorie créée avec succès."
+
+#: facturation/products/views.py:118
+msgid "Catégorie mise à jour."
+msgstr "Catégorie mise à jour."
+
+#: facturation/products/views.py:129
+msgid "Catégorie supprimée."
+msgstr "Catégorie supprimée."
+
+#: facturation/templates/account/base_entrance.html:8
+#: facturation/templates/base.html:9
+msgid "CamerInvoice"
+msgstr "CamerInvoice"
+
+#: facturation/templates/account/login.html:4
+msgid "Connexion"
+msgstr "Connexion"
+
+#: facturation/templates/account/login.html:9
+#: facturation/templates/account/signup.html:9
+msgid "Illustration de facturation"
+msgstr "Illustration de facturation"
+
+#: facturation/templates/account/login.html:12
+msgid "Votre facturation, simplement maîtrisée."
+msgstr "Votre facturation, simplement maîtrisée."
+
+#: facturation/templates/account/login.html:13
+msgid ""
+"Gérez vos clients, créez vos factures et suivez vos paiements depuis un seul "
+"espace."
+msgstr ""
+"Gérez vos clients, créez vos factures et suivez vos paiements depuis un seul "
+"espace."
+
+#: facturation/templates/account/login.html:24
+msgid "Bon retour !"
+msgstr "Bon retour !"
+
+#: facturation/templates/account/login.html:25
+msgid "Connectez-vous pour retrouver votre espace de travail."
+msgstr "Connectez-vous pour retrouver votre espace de travail."
+
+#: facturation/templates/account/login.html:34
+#: facturation/templates/account/signup.html:30
+msgid "Adresse e-mail"
+msgstr "Adresse e-mail"
+
+#: facturation/templates/account/login.html:40
+#: facturation/templates/account/signup.html:35
+msgid "Mot de passe"
+msgstr "Mot de passe"
+
+#: facturation/templates/account/login.html:41
+msgid "Mot de passe oublié ?"
+msgstr "Mot de passe oublié ?"
+
+#: facturation/templates/account/login.html:47
+msgid "Se souvenir de moi"
+msgstr "Se souvenir de moi"
+
+#: facturation/templates/account/login.html:50
+#: facturation/templates/account/signup.html:47
+msgid "Se connecter"
+msgstr "Se connecter"
+
+#: facturation/templates/account/login.html:52
+msgid "Vous n’avez pas encore de compte ?"
+msgstr "Vous n’avez pas encore de compte ?"
+
+#: facturation/templates/account/login.html:52
+#: facturation/templates/account/signup.html:4
+#: facturation/templates/account/signup.html:24
+msgid "Créer un compte"
+msgstr "Créer un compte"
+
+#: facturation/templates/account/signup.html:12
+msgid "Commencez à facturer avec sérénité."
+msgstr "Commencez à facturer avec sérénité."
+
+#: facturation/templates/account/signup.html:13
+msgid "Créez votre compte pour simplifier votre gestion quotidienne."
+msgstr "Créez votre compte pour simplifier votre gestion quotidienne."
+
+#: facturation/templates/account/signup.html:25
+msgid "Renseignez vos informations pour démarrer."
+msgstr "Renseignez vos informations pour démarrer."
+
+#: facturation/templates/account/signup.html:40
+msgid "Confirmer le mot de passe"
+msgstr "Confirmer le mot de passe"
+
+#: facturation/templates/account/signup.html:45
+msgid "Créer mon compte"
+msgstr "Créer mon compte"
+
+#: facturation/templates/account/signup.html:47
+msgid "Vous avez déjà un compte ?"
+msgstr "Vous avez déjà un compte ?"
+
+#: facturation/templates/allauth/layouts/entrance.html:8
+msgid "Sign In"
+msgstr "Sign In"
+
+#: facturation/templates/clients/client_confirm_delete.html:7
+#: facturation/templates/invoices/invoice_confirm_delete.html:7
+#: facturation/templates/products/category_confirm_delete.html:7
+#: facturation/templates/products/product_confirm_delete.html:7
+msgid "Action irréversible"
+msgstr "Action irréversible"
+
+#: facturation/templates/clients/client_confirm_delete.html:10
+#: facturation/templates/products/category_confirm_delete.html:10
+#: facturation/templates/products/product_confirm_delete.html:10
+#, python-format
+msgid "Supprimer %(nom)s ?"
+msgstr "Supprimer %(nom)s ?"
+
+#: facturation/templates/clients/client_confirm_delete.html:13
+msgid "Cette fiche client sera définitivement supprimée."
+msgstr "Cette fiche client sera définitivement supprimée."
+
+#: facturation/templates/clients/client_confirm_delete.html:19
+#: facturation/templates/clients/client_form.html:38
+#: facturation/templates/invoices/invoice_confirm_delete.html:19
+#: facturation/templates/invoices/invoice_form.html:86
+#: facturation/templates/products/category_confirm_delete.html:19
+#: facturation/templates/products/category_form.html:29
+#: facturation/templates/products/product_confirm_delete.html:19
+#: facturation/templates/products/product_form.html:39
+msgid "Annuler"
+msgstr "Annuler"
+
+#: facturation/templates/clients/client_confirm_delete.html:22
+#: facturation/templates/clients/client_list.html:50
+#: facturation/templates/invoices/invoice_confirm_delete.html:22
+#: facturation/templates/invoices/invoice_form.html:72
+#: facturation/templates/products/category_confirm_delete.html:22
+#: facturation/templates/products/category_list.html:40
+#: facturation/templates/products/product_confirm_delete.html:22
+#: facturation/templates/products/product_list.html:84
+msgid "Supprimer"
+msgstr "Supprimer"
+
+#: facturation/templates/clients/client_detail.html:9
+#: facturation/templates/clients/client_form.html:11
+msgid "← Retour aux clients"
+msgstr "← Retour aux clients"
+
+#: facturation/templates/clients/client_detail.html:19
+msgid "Ville non renseignée"
+msgstr "Ville non renseignée"
+
+#: facturation/templates/clients/client_detail.html:23
+#: facturation/templates/clients/client_list.html:46
+#: facturation/templates/invoices/invoice_detail.html:24
+#: facturation/templates/products/category_list.html:37
+#: facturation/templates/products/product_list.html:80
+msgid "Modifier"
+msgstr "Modifier"
+
+#: facturation/templates/clients/client_detail.html:29
+msgid "Contact"
+msgstr "Contact"
+
+#: facturation/templates/clients/client_detail.html:30
+msgid "Aucun e-mail"
+msgstr "Aucun e-mail"
+
+#: facturation/templates/clients/client_detail.html:31
+msgid "Aucun téléphone"
+msgstr "Aucun téléphone"
+
+#: facturation/templates/clients/client_detail.html:36
+msgid "Non renseignée"
+msgstr "Non renseignée"
+
+#: facturation/templates/clients/client_form.html:5
+msgid "Modifier client"
+msgstr "Modifier client"
+
+#: facturation/templates/clients/client_form.html:5
+#: facturation/templates/clients/client_form.html:18
+msgid "Nouveau client"
+msgstr "Nouveau client"
+
+#: facturation/templates/clients/client_form.html:16
+#: facturation/templates/products/product_form.html:14
+#, python-format
+msgid "Modifier %(nom)s"
+msgstr "Modifier %(nom)s"
+
+#: facturation/templates/clients/client_form.html:41
+#: facturation/templates/components/button.html:2
+#: facturation/templates/products/category_form.html:32
+#: facturation/templates/products/product_form.html:42
+msgid "Enregistrer"
+msgstr "Enregistrer"
+
+#: facturation/templates/clients/client_list.html:9
+msgid "Répertoire commercial"
+msgstr "Répertoire commercial"
+
+#: facturation/templates/clients/client_list.html:13
+msgid "+ Nouveau client"
+msgstr "+ Nouveau client"
+
+#: facturation/templates/clients/client_list.html:19
+msgid "Rechercher un client…"
+msgstr "Rechercher un client…"
+
+#: facturation/templates/clients/client_list.html:27
+msgid "E-mail"
+msgstr "E-mail"
+
+#: facturation/templates/clients/client_list.html:30
+#: facturation/templates/products/category_list.html:25
+#: facturation/templates/products/product_list.html:36
+msgid "Actions"
+msgstr "Actions"
+
+#: facturation/templates/clients/client_list.html:43
+msgid "Voir"
+msgstr "Voir"
+
+#: facturation/templates/clients/client_list.html:59
+msgid "Aucun client trouvé."
+msgstr "Aucun client trouvé."
+
+#: facturation/templates/components/alerts.html:36
+#: facturation/templates/layouts/modal.html:12
+msgid "Fermer"
+msgstr "Fermer"
+
+#: facturation/templates/components/pagination.html:5
+#, python-format
+msgid "Page %(current)s sur %(total)s"
+msgstr "Page %(current)s sur %(total)s"
+
+#: facturation/templates/components/pagination.html:13
+msgid "Précédent"
+msgstr "Précédent"
+
+#: facturation/templates/components/pagination.html:24
+msgid "Suivant"
+msgstr "Suivant"
+
+#: facturation/templates/dashboard/home.html:4
+#: facturation/templates/dashboard/home.html:5
+#: facturation/templates/layouts/sidebar.html:24
+msgid "Tableau de bord"
+msgstr "Tableau de bord"
+
+#: facturation/templates/dashboard/home.html:11
+#, python-format
+msgid "Bonjour %(name)s 👋"
+msgstr "Bonjour %(name)s 👋"
+
+#: facturation/templates/dashboard/home.html:14
+msgid "Vue d’ensemble de votre activité"
+msgstr "Vue d’ensemble de votre activité"
+
+#: facturation/templates/dashboard/home.html:18
+msgid "Créer une facture"
+msgstr "Créer une facture"
+
+#: facturation/templates/dashboard/home.html:24
+msgid "Total clients"
+msgstr "Total clients"
+
+#: facturation/templates/dashboard/home.html:32
+msgid "Total factures"
+msgstr "Total factures"
+
+#: facturation/templates/dashboard/home.html:40
+msgid "Factures payées"
+msgstr "Factures payées"
+
+#: facturation/templates/dashboard/home.html:58
+msgid "Chiffre d’affaires facturé"
+msgstr "Chiffre d’affaires facturé"
+
+#: facturation/templates/dashboard/home.html:65
+msgid "Répartition par statut"
+msgstr "Répartition par statut"
+
+#: facturation/templates/dashboard/home.html:74
+msgid "Factures récentes"
+msgstr "Factures récentes"
+
+#: facturation/templates/dashboard/home.html:76
+msgid "Voir toutes →"
+msgstr "Voir toutes →"
+
+#: facturation/templates/dashboard/home.html:84
+#: facturation/templates/invoices/invoice_list.html:37
+msgid "Référence"
+msgstr "Référence"
+
+#: facturation/templates/dashboard/home.html:86
+msgid "Date"
+msgstr "Date"
+
+#: facturation/templates/dashboard/home.html:87
+#: facturation/templates/invoices/invoice_detail.html:52
+#: facturation/templates/invoices/invoice_pdf.html:258
+msgid "Montant"
+msgstr "Montant"
+
+#: facturation/templates/dashboard/home.html:88
+#: facturation/templates/invoices/invoice_detail.html:32
+#: facturation/templates/invoices/invoice_list.html:42
+#: facturation/templates/products/product_list.html:35
+msgid "Statut"
+msgstr "Statut"
+
+#: facturation/templates/dashboard/home.html:117
+msgid "Aucune facture pour le moment."
+msgstr "Aucune facture pour le moment."
+
+#: facturation/templates/invoices/invoice_confirm_delete.html:10
+#, python-format
+msgid "Supprimer %(reference)s ?"
+msgstr "Supprimer %(reference)s ?"
+
+#: facturation/templates/invoices/invoice_confirm_delete.html:13
+msgid "La facture sera supprimée et les quantités seront restaurées en stock."
+msgstr "La facture sera supprimée et les quantités seront restaurées en stock."
+
+#: facturation/templates/invoices/invoice_detail.html:10
+#: facturation/templates/invoices/invoice_form.html:9
+msgid "← Retour aux factures"
+msgstr "← Retour aux factures"
+
+#: facturation/templates/invoices/invoice_detail.html:13
+#: facturation/templates/invoices/invoice_pdf.html:7
+#, python-format
+msgid "Facture %(reference)s"
+msgstr "Facture %(reference)s"
+
+#: facturation/templates/invoices/invoice_detail.html:16
+#, python-format
+msgid "%(client)s · Émise le %(date)s"
+msgstr "%(client)s · Émise le %(date)s"
+
+#: facturation/templates/invoices/invoice_detail.html:21
+msgid "Exporter PDF"
+msgstr "Exporter PDF"
+
+#: facturation/templates/invoices/invoice_detail.html:36
+#: facturation/templates/invoices/invoice_list.html:40
+msgid "Échéance"
+msgstr "Échéance"
+
+#: facturation/templates/invoices/invoice_detail.html:40
+#: facturation/templates/invoices/invoice_list.html:41
+msgid "Total"
+msgstr "Total"
+
+#: facturation/templates/invoices/invoice_detail.html:49
+#: facturation/templates/invoices/invoice_form.html:69
+#: facturation/templates/invoices/invoice_pdf.html:255
+#: facturation/templates/products/category_list.html:23
+msgid "Description"
+msgstr "Description"
+
+#: facturation/templates/invoices/invoice_detail.html:50
+#: facturation/templates/invoices/invoice_form.html:70
+msgid "Quantité"
+msgstr "Quantité"
+
+#: facturation/templates/invoices/invoice_detail.html:51
+#: facturation/templates/invoices/invoice_form.html:71
+#: facturation/templates/products/product_list.html:33
+msgid "Prix unitaire"
+msgstr "Prix unitaire"
+
+#: facturation/templates/invoices/invoice_detail.html:78
+msgid "Notes"
+msgstr "Notes"
+
+#: facturation/templates/invoices/invoice_form.html:4
+msgid "Facture"
+msgstr "Facture"
+
+#: facturation/templates/invoices/invoice_form.html:14
+#, python-format
+msgid "Modifier %(reference)s"
+msgstr "Modifier %(reference)s"
+
+#: facturation/templates/invoices/invoice_form.html:16
+#: facturation/templates/layouts/navbar.html:29
+msgid "Nouvelle facture"
+msgstr "Nouvelle facture"
+
+#: facturation/templates/invoices/invoice_form.html:30
+msgid "Informations générales"
+msgstr "Informations générales"
+
+#: facturation/templates/invoices/invoice_form.html:49
+msgid "Lignes de facture"
+msgstr "Lignes de facture"
+
+#: facturation/templates/invoices/invoice_form.html:51
+msgid "Sélectionnez les produits et indiquez les quantités."
+msgstr "Sélectionnez les produits et indiquez les quantités."
+
+#: facturation/templates/invoices/invoice_form.html:57
+msgid "+ Ajouter une ligne"
+msgstr "+ Ajouter une ligne"
+
+#: facturation/templates/invoices/invoice_form.html:68
+#: facturation/templates/products/product_form.html:4
+#: facturation/templates/products/product_list.html:31
+msgid "Produit"
+msgstr "Produit"
+
+#: facturation/templates/invoices/invoice_form.html:89
+msgid "Enregistrer la facture"
+msgstr "Enregistrer la facture"
+
+#: facturation/templates/invoices/invoice_list.html:4
+#: facturation/templates/invoices/invoice_list.html:10
+#: facturation/templates/layouts/sidebar.html:33
+msgid "Factures"
+msgstr "Factures"
+
+#: facturation/templates/invoices/invoice_list.html:9
+msgid "Suivi financier"
+msgstr "Suivi financier"
+
+#: facturation/templates/invoices/invoice_list.html:13
+msgid "+ Nouvelle facture"
+msgstr "+ Nouvelle facture"
+
+#: facturation/templates/invoices/invoice_list.html:19
+msgid "Référence ou client…"
+msgstr "Référence ou client…"
+
+#: facturation/templates/invoices/invoice_list.html:21
+msgid "Tous les statuts"
+msgstr "Tous les statuts"
+
+#: facturation/templates/invoices/invoice_list.html:29
+msgid "Filtrer"
+msgstr "Filtrer"
+
+#: facturation/templates/invoices/invoice_list.html:39
+msgid "Émission"
+msgstr "Émission"
+
+#: facturation/templates/invoices/invoice_list.html:74
+msgid "Aucune facture."
+msgstr "Aucune facture."
+
+#: facturation/templates/invoices/invoice_pdf.html:206
+msgid "FACTURE"
+msgstr "FACTURE"
+
+#: facturation/templates/invoices/invoice_pdf.html:216
+msgid "Émetteur"
+msgstr "Émetteur"
+
+#: facturation/templates/invoices/invoice_pdf.html:218
+msgid "Gestion de CamerInvoice"
+msgstr "Gestion de CamerInvoice"
+
+#: facturation/templates/invoices/invoice_pdf.html:227
+msgid "Facturé à"
+msgstr "Facturé à"
+
+#: facturation/templates/invoices/invoice_pdf.html:241
+msgid "Date d'émission"
+msgstr "Date d'émission"
+
+#: facturation/templates/invoices/invoice_pdf.html:242
+msgid "Date d'échéance"
+msgstr "Date d'échéance"
+
+#: facturation/templates/invoices/invoice_pdf.html:243
+msgid "Statut de paiement"
+msgstr "Statut de paiement"
+
+#: facturation/templates/invoices/invoice_pdf.html:256
+msgid "Qté"
+msgstr "Qté"
+
+#: facturation/templates/invoices/invoice_pdf.html:257
+msgid "Prix Unitaire"
+msgstr "Prix Unitaire"
+
+#: facturation/templates/invoices/invoice_pdf.html:271
+msgid "Aucune ligne de facturation."
+msgstr "Aucune ligne de facturation."
+
+#: facturation/templates/invoices/invoice_pdf.html:279
+msgid "Total à payer"
+msgstr "Total à payer"
+
+#: facturation/templates/invoices/invoice_pdf.html:286
+msgid "Notes & conditions :"
+msgstr "Notes & conditions :"
+
+#: facturation/templates/invoices/invoice_pdf.html:293
+msgid "Pour toute assistance, contactez-nous à"
+msgstr "Pour toute assistance, contactez-nous à"
+
+#: facturation/templates/layouts/breadcrumb.html:3
+msgid "Fil d’Ariane"
+msgstr "Fil d’Ariane"
+
+#: facturation/templates/layouts/empty_state.html:2
+msgid "Aucun élément"
+msgstr "Aucun élément"
+
+#: facturation/templates/layouts/empty_state.html:3
+msgid "Créer"
+msgstr "Créer"
+
+#: facturation/templates/layouts/footer.html:3
+msgid "Gestion de facturation simplifiée"
+msgstr "Gestion de facturation simplifiée"
+
+#: facturation/templates/layouts/navbar.html:6
+msgid "Ouvrir le menu"
+msgstr "Ouvrir le menu"
+
+#: facturation/templates/layouts/navbar.html:14
+msgid "Espace de gestion"
+msgstr "Espace de gestion"
+
+#: facturation/templates/layouts/navbar.html:18
+msgid "Pilotez votre activité en un coup d’œil"
+msgstr "Pilotez votre activité en un coup d’œil"
+
+#: facturation/templates/layouts/navbar.html:34
+msgid "Plein écran"
+msgstr "Plein écran"
+
+#: facturation/templates/layouts/navbar.html:35
+msgid "Activer le plein écran"
+msgstr "Activer le plein écran"
+
+#: facturation/templates/layouts/navbar.html:44
+msgid "Apparence"
+msgstr "Apparence"
+
+#: facturation/templates/layouts/navbar.html:45
+msgid "Choisir l’apparence"
+msgstr "Choisir l’apparence"
+
+#: facturation/templates/layouts/navbar.html:60
+msgid "Mode clair"
+msgstr "Mode clair"
+
+#: facturation/templates/layouts/navbar.html:64
+msgid "Mode sombre"
+msgstr "Mode sombre"
+
+#: facturation/templates/layouts/navbar.html:68
+msgid "Selon l’appareil"
+msgstr "Selon l’appareil"
+
+#: facturation/templates/layouts/navbar.html:76
+msgid "Langue"
+msgstr "Langue"
+
+#: facturation/templates/layouts/search_bar.html:2
+msgid "Rechercher"
+msgstr "Rechercher"
+
+#: facturation/templates/layouts/search_bar.html:3
+msgid "Rechercher…"
+msgstr "Rechercher…"
+
+#: facturation/templates/layouts/sidebar.html:11
+msgid "Gestion de facturation"
+msgstr "Gestion de facturation"
+
+#: facturation/templates/layouts/sidebar.html:51
+#: facturation/templates/products/category_list.html:24
+#: facturation/templates/products/product_list.html:4
+msgid "Produits"
+msgstr "Produits"
+
+#: facturation/templates/layouts/sidebar.html:59
+#: facturation/templates/products/category_list.html:4
+#: facturation/templates/products/category_list.html:10
+#: facturation/templates/products/product_list.html:14
+msgid "Catégories"
+msgstr "Catégories"
+
+#: facturation/templates/layouts/sidebar.html:74
+msgid "Déconnexion"
+msgstr "Déconnexion"
+
+#: facturation/templates/products/category_confirm_delete.html:13
+msgid "Les produits associés ne seront pas supprimés."
+msgstr "Les produits associés ne seront pas supprimés."
+
+#: facturation/templates/products/category_form.html:7
+msgid "← Retour aux catégories"
+msgstr "← Retour aux catégories"
+
+#: facturation/templates/products/category_form.html:12
+msgid "Modifier catégorie"
+msgstr "Modifier catégorie"
+
+#: facturation/templates/products/category_form.html:14
+msgid "Nouvelle catégorie"
+msgstr "Nouvelle catégorie"
+
+#: facturation/templates/products/category_list.html:9
+msgid "Organisation du catalogue"
+msgstr "Organisation du catalogue"
+
+#: facturation/templates/products/category_list.html:13
+msgid "+ Nouvelle catégorie"
+msgstr "+ Nouvelle catégorie"
+
+#: facturation/templates/products/category_list.html:48
+msgid "Aucune catégorie."
+msgstr "Aucune catégorie."
+
+#: facturation/templates/products/product_confirm_delete.html:13
+msgid "Le produit sera retiré de votre catalogue."
+msgstr "Le produit sera retiré de votre catalogue."
+
+#: facturation/templates/products/product_form.html:9
+msgid "← Retour au catalogue"
+msgstr "← Retour au catalogue"
+
+#: facturation/templates/products/product_form.html:16
+msgid "Nouveau produit"
+msgstr "Nouveau produit"
+
+#: facturation/templates/products/product_list.html:9
+msgid "Catalogue"
+msgstr "Catalogue"
+
+#: facturation/templates/products/product_list.html:10
+msgid "Produits et services"
+msgstr "Produits et services"
+
+#: facturation/templates/products/product_list.html:17
+msgid "+ Nouveau produit"
+msgstr "+ Nouveau produit"
+
+#: facturation/templates/products/product_list.html:24
+msgid "Rechercher un produit…"
+msgstr "Rechercher un produit…"
+
+#: facturation/templates/products/product_list.html:32
+msgid "Catégorie"
+msgstr "Catégorie"
+
+#: facturation/templates/products/product_list.html:34
+msgid "Stock"
+msgstr "Stock"
+
+#: facturation/templates/products/product_list.html:47
+msgid "Aucune image"
+msgstr "Aucune image"
+
+#: facturation/templates/products/product_list.html:69
+msgid "Non géré"
+msgstr "Non géré"
+
+#: facturation/templates/products/product_list.html:74
+msgid "Actif"
+msgstr "Actif"
+
+#: facturation/templates/products/product_list.html:74
+msgid "Inactif"
+msgstr "Inactif"
+
+#: facturation/templates/products/product_list.html:93
+msgid "Votre catalogue est vide."
+msgstr "Votre catalogue est vide."
+
+#: facturation/users/admin.py:24
+msgid "Personal info"
+msgstr "Personal info"
+
+#: facturation/users/admin.py:26
+msgid "Permissions"
+msgstr "Permissions"
+
+#: facturation/users/admin.py:37
+msgid "Important dates"
+msgstr "Important dates"
+
+#: facturation/users/apps.py:7
+msgid "Users"
+msgstr "Users"
+
+#: facturation/users/forms.py:27 facturation/users/tests/test_forms.py:41
+msgid "This email has already been taken."
+msgstr "This email has already been taken."
+
+#: facturation/users/models.py:20
+msgid "Name of User"
+msgstr "Name of User"
+
+#: facturation/users/models.py:23
+msgid "email address"
+msgstr "email address"
+
+#: facturation/users/tests/test_views.py:78 facturation/users/views.py:31
+msgid "Information successfully updated"
+msgstr "Information successfully updated"

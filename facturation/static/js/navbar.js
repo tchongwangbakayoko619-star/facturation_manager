@@ -11,6 +11,7 @@ export function initNavbar() {
   $("#sidebar-toggle")?.addEventListener("click", () => setSidebar(sidebar?.classList.contains("-translate-x-full")));
   backdrop?.addEventListener("click", () => setSidebar(false));
   $$("#sidebar a").forEach((link) => link.addEventListener("click", () => setSidebar(false)));
+
   const themeToggle = $("#theme-toggle");
   const themeMenu = $("#theme-menu");
   const applyTheme = (theme) => {
@@ -35,13 +36,45 @@ export function initNavbar() {
       themeToggle?.setAttribute("aria-expanded", "false");
     }
   });
+
+  // --- Plein écran ---
+  const FULLSCREEN_KEY = "wasFullscreen";
+
   $("#fullscreen-toggle")?.addEventListener("click", async () => {
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen();
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        sessionStorage.removeItem(FULLSCREEN_KEY);
+      } else {
+        await document.documentElement.requestFullscreen();
+        sessionStorage.setItem(FULLSCREEN_KEY, "1");
+      }
     } catch {
       // Le navigateur ou l'intégration actuelle peut interdire le plein écran.
     }
   });
+
+  // Si on était en plein écran avant un changement de page (navigation
+  // classique de la sidebar, qui recharge le document), on tente de le
+  // restaurer automatiquement. Certains navigateurs (notamment Firefox)
+  // refusent requestFullscreen() hors d'un geste utilisateur direct : dans
+  // ce cas l'appel échoue silencieusement et on nettoie le flag pour éviter
+  // de retenter indéfiniment sur les pages suivantes.
+  if (sessionStorage.getItem(FULLSCREEN_KEY) === "1") {
+    document.documentElement.requestFullscreen().catch(() => {
+      sessionStorage.removeItem(FULLSCREEN_KEY);
+    });
+  }
+
+  // Garde le flag synchronisé si l'utilisateur quitte le plein écran
+  // manuellement (touche Échap, ou bouton natif du navigateur).
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      sessionStorage.removeItem(FULLSCREEN_KEY);
+    } else {
+      sessionStorage.setItem(FULLSCREEN_KEY, "1");
+    }
+  });
+
   $$('[data-alert-close]').forEach((button) => button.addEventListener("click", () => button.closest("[role='alert']")?.remove()));
 }

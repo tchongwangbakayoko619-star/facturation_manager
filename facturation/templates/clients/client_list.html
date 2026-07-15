@@ -1,6 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Clients{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Clients" %}{% endblock %}
+
 {% block content %}
-<section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-sm font-semibold text-blue-600">Répertoire commercial</p><h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Clients</h2></div><a href="{% url 'clients:create' %}" class="rounded-xl bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-700">+ Nouveau client</a></section>
-<section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"><form method="get" class="border-b border-slate-100 p-5 dark:border-slate-800">{% include "layouts/search_bar.html" with value=request.GET.q placeholder="Rechercher un client…" class="max-w-md" %}</form><div class="overflow-x-auto"><table class="w-full min-w-[680px] text-left text-sm"><thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-800/60"><tr><th class="px-6 py-4">Client</th><th class="px-6 py-4">E-mail</th><th class="px-6 py-4">Téléphone</th><th class="px-6 py-4">Ville</th><th class="px-6 py-4 text-right">Actions</th></tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-800">{% for client in clients %}<tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40"><td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">{{ client.nom }}</td><td class="px-6 py-4 text-slate-500">{{ client.email|default:"—" }}</td><td class="px-6 py-4 text-slate-500">{{ client.telephone|default:"—" }}</td><td class="px-6 py-4 text-slate-500">{{ client.ville|default:"—" }}</td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-3"><a href="{% url 'clients:detail' client.pk %}" class="font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-300">Voir</a><a href="{% url 'clients:update' client.pk %}" class="font-semibold text-blue-600 hover:text-blue-700">Modifier</a>{% if user.is_superuser %}<a href="{% url 'clients:delete' client.pk %}" class="font-semibold text-rose-600 hover:text-rose-700">Supprimer</a>{% endif %}</div></td></tr>{% empty %}<tr><td colspan="5" class="px-6 py-12 text-center text-slate-500">Aucun client trouvé.</td></tr>{% endfor %}</tbody></table></div>{% include "layouts/pagination.html" %}</section>
+<section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+  <div>
+    <p class="text-sm font-semibold text-blue-600">{% trans "Répertoire commercial" %}</p>
+    <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{% trans "Clients" %}</h2>
+  </div>
+  <a href="{% url 'clients:create' %}" class="rounded-xl bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+    {% trans "+ Nouveau client" %}
+  </a>
+</section>
+
+<section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+  <form method="get" class="border-b border-slate-100 p-5 dark:border-slate-800">
+    {% include "layouts/search_bar.html" with value=request.GET.q placeholder=_("Rechercher un client…") class="max-w-md" %}
+  </form>
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[680px] text-left text-sm">
+      <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-800/60">
+        <tr>
+          <th class="px-6 py-4">{% trans "Client" %}</th>
+          <th class="px-6 py-4">{% trans "E-mail" %}</th>
+          <th class="px-6 py-4">{% trans "Téléphone" %}</th>
+          <th class="px-6 py-4">{% trans "Ville" %}</th>
+          <th class="px-6 py-4 text-right">{% trans "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for client in clients %}
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40">
+            <td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">{{ client.nom }}</td>
+            <td class="px-6 py-4 text-slate-500">{{ client.email|default:"—" }}</td>
+            <td class="px-6 py-4 text-slate-500">{{ client.telephone|default:"—" }}</td>
+            <td class="px-6 py-4 text-slate-500">{{ client.ville|default:"—" }}</td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-3">
+                <a href="{% url 'clients:detail' client.pk %}" class="font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-300">
+                  {% trans "Voir" %}
+                </a>
+                <a href="{% url 'clients:update' client.pk %}" class="font-semibold text-blue-600 hover:text-blue-700">
+                  {% trans "Modifier" %}
+                </a>
+                {% if user.is_superuser %}
+                  <a href="{% url 'clients:delete' client.pk %}" class="font-semibold text-rose-600 hover:text-rose-700">
+                    {% trans "Supprimer" %}
+                  </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+              {% trans "Aucun client trouvé." %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "layouts/pagination.html" %}
+</section>
 {% endblock %}
