@@ -15,20 +15,59 @@
 </section>
 
 <section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-  <form method="get" class="flex flex-col gap-3 border-b border-slate-100 p-5 sm:flex-row dark:border-slate-800">
-    {% include "layouts/search_bar.html" with value=request.GET.q placeholder=_("Référence ou client…") class="sm:max-w-md" %}
-    <select name="status" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
-      <option value="">{% trans "Tous les statuts" %}</option>
-      {% for value, label in view.model.Status.choices %}
-        <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
-          {{ label }}
-        </option>
-      {% endfor %}
-    </select>
-    <button class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
-      {% trans "Filtrer" %}
-    </button>
+  <form method="get" id="filterForm" class="flex flex-col gap-3 border-b border-slate-100 p-5 sm:flex-row sm:items-center dark:border-slate-800">
+    <div class="relative flex-1 sm:max-w-md">
+      <input type="text" 
+             name="q" 
+             id="searchInput"
+             value="{{ request.GET.q }}" 
+             placeholder="{% trans 'Référence ou client…' %}"
+             class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+      <svg class="absolute right-3 top-3 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </div>
+    
+    <div class="relative min-w-[180px]">
+      <select name="status" 
+              id="statusFilter" 
+              class="w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 py-2.5 pr-10 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+        <option value="">{% trans "Tous les statuts" %}</option>
+        {% for value, label in view.model.Status.choices %}
+          <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+      <svg class="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+    
+    <div class="flex gap-2">
+      <button type="submit" 
+              id="filterButton"
+              class="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+        <span class="flex items-center gap-2">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+          </svg>
+          {% trans "Filtrer" %}
+        </span>
+      </button>
+      
+      <button type="button" 
+              id="clearFilters" 
+              class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
+        {% trans "Réinitialiser" %}
+      </button>
+    </div>
   </form>
+
+  <!-- Compteur de résultats -->
+  <div id="resultsCounter" class="px-6 py-3 text-sm text-slate-500 border-b border-slate-100 dark:border-slate-800">
+    <span id="resultCount">0</span> {% trans "résultat(s)" %}
+  </div>
 
   <div class="overflow-x-auto">
     <table class="w-full min-w-[760px] text-left text-sm">
@@ -42,11 +81,11 @@
           <th class="px-6 py-4">{% trans "Statut" %}</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="invoiceBody">
         {% for invoice in invoices %}
-          <tr>
+          <tr data-status="{{ invoice.status }}" data-reference="{{ invoice.reference|lower }}" data-client="{{ invoice.client|lower }}" class="invoice-row">
             <td class="px-6 py-4 font-semibold">
-              <a href="{% url 'invoices:detail' invoice.pk %}" class="text-blue-600">
+              <a href="{% url 'invoices:detail' invoice.pk %}" class="text-blue-600 hover:underline">
                 {{ invoice.reference }}
               </a>
             </td>
@@ -63,13 +102,18 @@
               {{ invoice.montant_total }}
             </td>
             <td class="px-6 py-4">
-              <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+              <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                {% if invoice.status == 'draft' %}bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300
+                {% elif invoice.status == 'sent' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300
+                {% elif invoice.status == 'paid' %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300
+                {% elif invoice.status == 'overdue' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300
+                {% else %}bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300{% endif %}">
                 {{ invoice.get_status_display }}
               </span>
             </td>
           </tr>
         {% empty %}
-          <tr>
+          <tr id="noResults">
             <td colspan="6" class="px-6 py-12 text-center text-slate-500">
               {% trans "Aucune facture." %}
             </td>
@@ -81,4 +125,225 @@
 
   {% include "layouts/pagination.html" %}
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchInput');
+    const filterButton = document.getElementById('filterButton');
+    const clearButton = document.getElementById('clearFilters');
+    const filterForm = document.getElementById('filterForm');
+    const rows = document.querySelectorAll('#invoiceBody .invoice-row');
+    const noResults = document.getElementById('noResults');
+    const resultCount = document.getElementById('resultCount');
+    
+    // Fonction pour filtrer les lignes
+    function filterInvoices() {
+        const statusValue = statusFilter.value;
+        const searchValue = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const rowStatus = row.dataset.status || '';
+            const rowReference = row.dataset.reference || '';
+            const rowClient = row.dataset.client || '';
+            
+            // Vérifier le statut
+            let statusMatch = true;
+            if (statusValue) {
+                statusMatch = rowStatus === statusValue;
+            }
+            
+            // Vérifier la recherche
+            let searchMatch = true;
+            if (searchValue) {
+                searchMatch = rowReference.includes(searchValue) || 
+                             rowClient.includes(searchValue);
+            }
+            
+            // Afficher ou cacher la ligne avec animation
+            if (statusMatch && searchMatch) {
+                row.style.display = '';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-10px)';
+            }
+        });
+        
+        // Gérer l'affichage du message "Aucun résultat"
+        if (noResults) {
+            if (visibleCount === 0) {
+                noResults.style.display = '';
+                let message = "{% trans 'Aucune facture' %}";
+                if (statusValue || searchValue) {
+                    message = "{% trans 'Aucune facture ne correspond aux critères de recherche' %}";
+                }
+                noResults.querySelector('td').textContent = message;
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+        
+        // Mettre à jour le compteur
+        resultCount.textContent = visibleCount;
+        
+        // Mettre à jour l'URL sans recharger la page
+        updateURL(statusValue, searchValue);
+    }
+    
+    // Fonction pour mettre à jour l'URL
+    function updateURL(status, search) {
+        const url = new URL(window.location.href);
+        if (status) {
+            url.searchParams.set('status', status);
+        } else {
+            url.searchParams.delete('status');
+        }
+        if (search) {
+            url.searchParams.set('q', search);
+        } else {
+            url.searchParams.delete('q');
+        }
+        window.history.pushState({}, '', url);
+    }
+    
+    // Fonction pour réinitialiser les filtres
+    function resetFilters() {
+        statusFilter.value = '';
+        searchInput.value = '';
+        filterInvoices();
+        // Animation de feedback
+        clearButton.classList.add('ring-2', 'ring-blue-500');
+        setTimeout(() => {
+            clearButton.classList.remove('ring-2', 'ring-blue-500');
+        }, 300);
+    }
+    
+    // Événements
+    
+    // Bouton Filtrer (soumission du formulaire)
+    filterButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        filterInvoices();
+        // Animation de feedback
+        this.classList.add('scale-95');
+        setTimeout(() => {
+            this.classList.remove('scale-95');
+        }, 150);
+    });
+    
+    // Filtrage automatique avec délai pour la recherche
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterInvoices, 300);
+    });
+    
+    // Filtrage automatique pour le statut
+    statusFilter.addEventListener('change', function() {
+        filterInvoices();
+    });
+    
+    // Réinitialiser les filtres
+    clearButton.addEventListener('click', resetFilters);
+    
+    // Soumission du formulaire (empêcher le rechargement)
+    filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        filterInvoices();
+    });
+    
+    // Filtrer au chargement de la page si des paramètres existent
+    if (window.location.search.includes('status=') || window.location.search.includes('q=')) {
+        filterInvoices();
+    }
+    
+    // Gestion du bouton "Entrée" dans le champ de recherche
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterInvoices();
+        }
+    });
+    
+    // Mise à jour initiale du compteur
+    const initialVisible = document.querySelectorAll('#invoiceBody .invoice-row:not([style*="display: none"])').length;
+    resultCount.textContent = initialVisible || rows.length;
+});
+</script>
+
+<style>
+/* Styles pour le formulaire */
+#filterForm input,
+#filterForm select {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#filterForm input:focus,
+#filterForm select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animation pour les lignes du tableau */
+.invoice-row {
+    transition: all 0.25s ease-in-out;
+}
+
+.invoice-row[style*="display: none"] {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+/* Animation du bouton Filtrer */
+#filterButton {
+    transition: all 0.15s ease;
+}
+
+#filterButton.scale-95 {
+    transform: scale(0.95);
+}
+
+/* Animation du bouton Réinitialiser */
+#clearFilters {
+    transition: all 0.2s ease;
+}
+
+#clearFilters:active {
+    transform: scale(0.95);
+}
+
+/* Badges de statut avec couleurs */
+.status-badge {
+    transition: all 0.2s ease;
+}
+
+/* Compteur de résultats */
+#resultsCounter {
+    transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    #filterForm {
+        flex-direction: column;
+    }
+    
+    #filterForm > div {
+        width: 100%;
+    }
+    
+    #filterForm .flex {
+        width: 100%;
+    }
+    
+    #filterForm .flex button {
+        flex: 1;
+    }
+}
+</style>
 {% endblock %}

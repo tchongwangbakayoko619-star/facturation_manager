@@ -58,11 +58,13 @@ class ClientUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ClientDeleteView(SuperuserRequiredMixin, DeleteView):
+class ClientDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     model = Client
     template_name = "clients/client_confirm_delete.html"
     success_url = reverse_lazy("clients:list")
+    superuser_bypass = True  
 
     def form_valid(self, form):
-        messages.success(self.request, _("Client supprimé."))
-        return super().form_valid(form)
+        response = super().form_valid(form) 
+        messages.success(self.request, _("Client supprimé.")) 
+        return response

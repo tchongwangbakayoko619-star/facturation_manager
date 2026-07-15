@@ -5,13 +5,18 @@ from django.core.exceptions import PermissionDenied
 
 
 def superuser_required(view_func):
-    """Décorateur : combine login_required + vérification is_superuser."""
+    """
+    Décorateur pour vues-fonctions : combine login_required + vérification is_superuser.
 
-    @login_required
+    - Non connecté -> redirection vers la page de login.
+    - Connecté mais pas superuser -> 403 (PermissionDenied).
+    - Superuser -> exécution normale de la vue.
+    """
+
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if not request.user.is_superuser:
             raise PermissionDenied
         return view_func(request, *args, **kwargs)
 
-    return wrapper
+    return login_required(wrapper)

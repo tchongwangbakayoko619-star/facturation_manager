@@ -1,6 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import (
+    FieldDoesNotExist,
+    ImproperlyConfigured,
+    PermissionDenied,
+)
+from django.db.models import QuerySet
 
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -21,11 +26,42 @@ class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
 class OwnerRequiredMixin:
     """
     Restreint un queryset aux objets appartenant à l'utilisateur connecté.
-    Le modèle doit avoir un champ `owner` pointant vers AUTH_USER_MODEL.
+    Le modèle doit avoir un champ (ou lookup) pointant vers AUTH_USER_MODEL.
     """
 
-    owner_field = "owner"
+    owner_field: str = "owner"
+    # Si True, un superuser voit tout (bypass du filtre). À activer explicitement
+    # au cas par cas, jamais par défaut, pour éviter les fuites de données accidentelles.
+    superuser_bypass: bool = False
 
-    def get_queryset(self):
+    def get_owner_field(self) -> str:
+        return self.owner_field
+
+    def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
-        return qs.filter(**{self.owner_field: self.request.user})
+
+        user = self.request.user
+
+        # Défense en profondeur : même si LoginRequiredMixin protège la vue,
+        # on ne fait jamais confiance implicitement à un user anonyme.
+        if not user.is_authenticated:
+            return qs.none()
+
+        if self.superuser_bypass and user.is_superuser:
+            return qs
+
+        field_name = self.get_owner_field()
+
+        # Valide que le champ existe réellement sur le modèle, pour échouer
+        # explicitement (erreur de config) plutôt que de renvoyer un queryset
+        # vide silencieusement en cas de faute de frappe dans owner_field.
+        model = qs.model
+        try:
+            model._meta.get_field(field_name.split("__")[0])
+        except FieldDoesNotExist as exc:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__}: le champ '{field_name}' "
+                f"n'existe pas sur le modèle {model.__name__}."
+            ) from exc
+
+        return qs.filter(**{field_name: user})
