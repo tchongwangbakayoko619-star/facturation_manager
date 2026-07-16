@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import FieldDoesNotExist
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import PermissionDenied
-
+""" les mixins"""
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """
