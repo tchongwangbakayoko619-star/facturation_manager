@@ -47,7 +47,7 @@ dev = [
   "mypy==2.1.0",
   "pre-commit==4.6.0",
   "psycopg[c]==3.3.4",
-  "pytest==9.1.1",
+  "pytest==8.3.5",
   "pytest-django==4.12.0",
   "pytest-sugar==1.1.1",
   "ruff==0.15.21",
@@ -163,13 +163,13 @@ lint.isort.force-single-line = true
 keep_full_version = true
 
 # ==== pytest ====
-[tool.pytest]
+[tool.pytest.ini_options]
 addopts = [
   "--ds=config.settings.test",
   "--reuse-db",
   "--import-mode=importlib",
 ]
-minversion = "9.0"
+minversion = "8.0"
 python_files = [
   "tests.py",
   "test_*.py",
