@@ -26,7 +26,9 @@ class Category(models.Model):
         verbose_name_plural = _("catégories")
         ordering = ["nom"]
         constraints = [
-            models.UniqueConstraint(fields=["owner", "nom"], name="unique_category_name_per_owner"),
+            models.UniqueConstraint(
+                fields=["owner", "nom"], name="unique_category_name_per_owner",
+            ),
         ]
 
     def __str__(self):
@@ -57,14 +59,18 @@ class Product(models.Model):
         null=True,
         help_text=_("Format recommandé : carré, 800x800px maximum."),
     )
-    prix_unitaire = models.DecimalField(_("prix unitaire"), max_digits=12, decimal_places=2)
+    prix_unitaire = models.DecimalField(
+        _("prix unitaire"), max_digits=12, decimal_places=2,
+    )
     gere_stock = models.BooleanField(
         _("gérer le stock"),
         default=False,
         help_text=_("Active le suivi de quantité disponible pour ce produit."),
     )
     stock = models.PositiveIntegerField(_("stock disponible"), null=True, blank=True)
-    actif = models.BooleanField(_("actif"), default=True, help_text=_("Visible dans les listes de sélection."))
+    actif = models.BooleanField(
+        _("actif"), default=True, help_text=_("Visible dans les listes de sélection."),
+    )
     created_at = models.DateTimeField(_("créé le"), auto_now_add=True)
     updated_at = models.DateTimeField(_("mis à jour le"), auto_now=True)
 

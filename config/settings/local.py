@@ -62,14 +62,9 @@ if env("USE_DOCKER") == "yes":
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS += [".".join([*ip.split(".")[:-1], "1"]) for ip in ips]
 # Configuration Email pour le développement
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# Commente temporairement les lignes SMTP si elles existent
-# EMAIL_HOST = 'mailpit'
-# EMAIL_PORT = 1025
-# EMAIL_USE_TLS = False
-# EMAIL_USE_SSL = False
-# django-extensions
+
 # ------------------------------------------------------------------------------
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
 INSTALLED_APPS += ["django_extensions"]

@@ -1,4 +1,4 @@
-# ruff: noqa: ERA001, E501
+# ruff: noqa: E501
 """Base settings to build other settings files upon."""
 
 from pathlib import Path
@@ -84,7 +84,7 @@ LOCAL_APPS = [
     "facturation.clients",
     "facturation.invoices",
     "facturation.dashboard",
-    "facturation.products", 
+    "facturation.products",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

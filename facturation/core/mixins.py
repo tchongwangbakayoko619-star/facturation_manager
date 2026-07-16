@@ -1,11 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import (
-    FieldDoesNotExist,
-    ImproperlyConfigured,
-    PermissionDenied,
-)
-from django.db.models import QuerySet
+from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import PermissionDenied
 
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -30,14 +27,12 @@ class OwnerRequiredMixin:
     """
 
     owner_field: str = "owner"
-    # Si True, un superuser voit tout (bypass du filtre). À activer explicitement
-    # au cas par cas, jamais par défaut, pour éviter les fuites de données accidentelles.
     superuser_bypass: bool = False
 
     def get_owner_field(self) -> str:
         return self.owner_field
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self):
         qs = super().get_queryset()
 
         user = self.request.user
@@ -57,11 +52,13 @@ class OwnerRequiredMixin:
         # vide silencieusement en cas de faute de frappe dans owner_field.
         model = qs.model
         try:
-            model._meta.get_field(field_name.split("__")[0])
+            # Utilisation de get_field() qui est une méthode publique de Options
+            model._meta.get_field(field_name.split("__")[0])  # noqa: SLF001
         except FieldDoesNotExist as exc:
-            raise ImproperlyConfigured(
+            msg = (
                 f"{self.__class__.__name__}: le champ '{field_name}' "
                 f"n'existe pas sur le modèle {model.__name__}."
-            ) from exc
+            )
+            raise ImproperlyConfigured(msg) from exc
 
         return qs.filter(**{field_name: user})

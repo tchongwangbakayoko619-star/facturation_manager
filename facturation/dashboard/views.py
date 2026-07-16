@@ -1,15 +1,21 @@
 from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import DecimalField, F, Sum
-from django.db.models.functions import Coalesce, TruncMonth
+from django.db.models import Count
+from django.db.models import DecimalField
+from django.db.models import F
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
+from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
+from django.utils import timezone  # ← Ajouté
 from django.utils.formats import date_format
 from django.views import View
 from django.views.generic import TemplateView
 
 from facturation.clients.models import Client
-from facturation.invoices.models import Invoice, InvoiceLine
+from facturation.invoices.models import Invoice
+from facturation.invoices.models import InvoiceLine
 
 MONTANT_LIGNE = F("quantite") * F("prix_unitaire")
 
@@ -36,12 +42,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         invoices = Invoice.objects.filter(owner=self.request.user)
 
-        context["total_clients"] = Client.objects.filter(owner=self.request.user).count()
+        context["total_clients"] = Client.objects.filter(
+            owner=self.request.user,
+        ).count()
         context["total_invoices"] = invoices.count()
         context["invoices_paid"] = invoices.filter(status=Invoice.Status.PAID).count()
-        context["invoices_overdue"] = invoices.filter(status=Invoice.Status.OVERDUE).count()
+        context["invoices_overdue"] = invoices.filter(
+            status=Invoice.Status.OVERDUE,
+        ).count()
         context["recent_invoices"] = invoices.select_related("client").order_by(
-            "-date_emission"
+            "-date_emission",
         )[:5]
         return context
 
@@ -63,8 +73,12 @@ class RevenueByMonthJSONView(LoginRequiredMixin, View):
     MONTHS_RANGE = 12
 
     def get(self, request):
-        today = date.today()
-        start_date = _add_months(date(today.year, today.month, 1), -(self.MONTHS_RANGE - 1))
+        # Utilisation de timezone.now().date() avec fuseau horaire
+        today = timezone.now().date()  # ← Corrigé
+        start_date = _add_months(
+            date(today.year, today.month, 1),
+            -(self.MONTHS_RANGE - 1),
+        )
 
         rows = (
             InvoiceLine.objects.filter(
@@ -75,8 +89,10 @@ class RevenueByMonthJSONView(LoginRequiredMixin, View):
             .values("month")
             .annotate(
                 total=Coalesce(
-                    Sum(MONTANT_LIGNE), 0, output_field=DecimalField(max_digits=14, decimal_places=2)
-                )
+                    Sum(MONTANT_LIGNE),
+                    0,
+                    output_field=DecimalField(max_digits=14, decimal_places=2),
+                ),
             )
             .order_by("month")
         )
@@ -104,12 +120,11 @@ class InvoiceStatusDistributionJSONView(LoginRequiredMixin, View):
     """
 
     def get(self, request):
-        from django.db.models import Count
-
+        # L'import est maintenant en haut du fichier
         raw_counts = dict(
             Invoice.objects.filter(owner=request.user)
             .values_list("status")
-            .annotate(count=Count("id"))
+            .annotate(count=Count("id")),
         )
 
         labels = [str(label) for _, label in Invoice.Status.choices]
@@ -137,8 +152,10 @@ class TopClientsJSONView(LoginRequiredMixin, View):
             .values("invoice__client__id", "invoice__client__nom")
             .annotate(
                 total=Coalesce(
-                    Sum(MONTANT_LIGNE), 0, output_field=DecimalField(max_digits=14, decimal_places=2)
-                )
+                    Sum(MONTANT_LIGNE),
+                    0,
+                    output_field=DecimalField(max_digits=14, decimal_places=2),
+                ),
             )
             .order_by("-total")[: self.LIMIT]
         )

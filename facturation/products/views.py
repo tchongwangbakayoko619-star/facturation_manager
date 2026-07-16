@@ -4,9 +4,14 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView, View
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+from django.views.generic import View
 
-from facturation.core.mixins import OwnerRequiredMixin, SuperuserRequiredMixin
+from facturation.core.mixins import OwnerRequiredMixin
+from facturation.core.mixins import SuperuserRequiredMixin
 
 from .forms import CategoryForm
 from .forms import ProductForm
@@ -85,7 +90,7 @@ class ProductDetailJSONView(LoginRequiredMixin, View):
                 "description": product.nom,
                 "prix_unitaire": str(product.prix_unitaire),
                 "en_rupture": product.en_rupture,
-            }
+            },
         )
 
 

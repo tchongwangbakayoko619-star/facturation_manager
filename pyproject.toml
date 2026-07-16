@@ -29,6 +29,7 @@ dependencies = [
   "python-slugify==8.0.4",
   "redis==8.0.1",
   "whitenoise==6.12.0",
+  "xhtml2pdf>=0.2.17",
 ]
 
 [dependency-groups]
@@ -42,6 +43,7 @@ dev = [
   "djlint==1.40.5",
   "factory-boy==3.3.3",
   "ipdb==0.13.13",
+  "isort>=8.0.1",
   "mypy==2.1.0",
   "pre-commit==4.6.0",
   "psycopg[c]==3.3.4",
@@ -61,7 +63,25 @@ close_void_tags = true
 format_css = true
 format_js = true
 # TODO: remove T002 when fixed https://github.com/djlint/djLint/issues/687
-ignore = "H006,H030,H031,T002"
+ignore = [
+    "E501",    # lignes trop longues
+    "COM812",  # virgule finale manquante
+    "TRY003",  # message d'exception
+    "EM101",   # chaîne dans ValidationError
+    "EM102",   # f-string dans ValidationError
+    "PLC0415", # import dans une fonction
+    "PTH113",  # os.path.isfile()
+    "PTH118",  # os.path.join()
+    "SLF001",  # accès à un membre privé
+    "W292",    # pas de nouvelle ligne en fin de fichier
+    "W293",    # espaces sur une ligne vide
+    "I001",    # imports non triés
+    "H006",
+    "H030",
+    "H031",
+    "T002"
+]
+
 include = "H017,H035"
 indent = 2
 max_line_length = 119

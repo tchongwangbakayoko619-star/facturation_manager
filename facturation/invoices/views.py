@@ -1,7 +1,7 @@
-import os
 from collections import defaultdict
 from decimal import Decimal
 from io import BytesIO
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,18 +9,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import ListView
 from xhtml2pdf import pisa
 
 from facturation.core.mixins import SuperuserRequiredMixin
 from facturation.products.models import Product
 
-from .forms import InvoiceForm, InvoiceLineFormSet
+from .forms import InvoiceForm
+from .forms import InvoiceLineFormSet
 from .models import Invoice
 
 
@@ -50,14 +56,18 @@ def reconcile_stock(invoice, formset):
     previous = _stock_quantities_from_invoice(invoice)
     requested = _stock_quantities_from_formset(formset)
     product_ids = set(previous) | set(requested)
-    products = Product.objects.select_for_update().filter(pk__in=product_ids, gere_stock=True)
+    products = Product.objects.select_for_update().filter(
+        pk__in=product_ids, gere_stock=True,
+    )
 
     for product in products:
         change = requested[product.pk] - previous[product.pk]
         if change > 0 and (product.stock is None or product.stock < change):
-            raise ValidationError(
-                f"Stock insuffisant pour « {product.nom} » (disponible : {product.stock or 0})."
+            msg = (
+                f"Stock insuffisant pour « {product.nom} » "
+                f"(disponible : {product.stock or 0})."
             )
+            raise ValidationError(msg)
         if change:
             product.stock = (product.stock or 0) - int(change)
             product.save(update_fields=["stock", "updated_at"])
@@ -66,7 +76,9 @@ def reconcile_stock(invoice, formset):
 def restore_invoice_stock(invoice):
     """Put reserved quantities back when an invoice is deleted."""
     quantities = _stock_quantities_from_invoice(invoice)
-    for product in Product.objects.select_for_update().filter(pk__in=quantities, gere_stock=True):
+    for product in Product.objects.select_for_update().filter(
+        pk__in=quantities, gere_stock=True,
+    ):
         product.stock = (product.stock or 0) + int(quantities[product.pk])
         product.save(update_fields=["stock", "updated_at"])
 
@@ -77,27 +89,30 @@ def link_callback(uri, rel):
     pour que xhtml2pdf puisse y accéder localement sur la machine.
     """
     # Récupération des configurations statiques de Django
-    s_url = settings.STATIC_URL      # Généralement '/static/'
-    s_root = settings.STATIC_ROOT    # Dossier où collectstatic rassemble les fichiers
-    m_url = settings.MEDIA_URL       # Généralement '/media/'
-    m_root = settings.MEDIA_ROOT     # Dossier des fichiers téléversés
+    s_url = settings.STATIC_URL  # Généralement '/static/'
+    s_root = settings.STATIC_ROOT  # Dossier où collectstatic rassemble les fichiers
+    m_url = settings.MEDIA_URL  # Généralement '/media/'
+    m_root = settings.MEDIA_ROOT  # Dossier des fichiers téléversés
 
     # Résolution du chemin physique selon le préfixe de l'URI
     if uri.startswith(m_url):
-        path = os.path.join(m_root, uri.replace(m_url, ""))
+        path = Path(m_root) / uri.replace(m_url, "")
     elif uri.startswith(s_url):
-        path = os.path.join(s_root, uri.replace(s_url, ""))
+        path = Path(s_root) / uri.replace(s_url, "")
     else:
         # Fallback pour les chemins relatifs bruts du projet
-        path = os.path.join(settings.BASE_DIR, uri)
+        path = Path(settings.BASE_DIR) / uri
 
-    # Si le fichier n'existe pas, on tente de le chercher directement dans le dossier "facturation"
-    if not os.path.isfile(path):
-        alternative_path = os.path.join(settings.BASE_DIR, "facturation", uri.lstrip("/"))
-        if os.path.isfile(alternative_path):
+    # Si le fichier n'existe pas, on tente de le chercher directement
+    # dans le dossier "facturation"
+    if not Path(path).is_file():
+        alternative_path = (
+            Path(settings.BASE_DIR) / "facturation" / uri.lstrip("/")
+        )
+        if Path(alternative_path).is_file():
             path = alternative_path
 
-    return path
+    return str(path)
 
 
 def _invoice_pdf(invoice):
@@ -110,19 +125,19 @@ def _invoice_pdf(invoice):
     }
     # Rendu du template HTML
     html_string = render_to_string("invoices/invoice_pdf.html", context)
-    
+
     output = BytesIO()
     # Utilisation du callback pour résoudre les images locales comme le logo
     pisa_status = pisa.CreatePDF(
         src=html_string,
         dest=output,
         encoding="utf-8",
-        link_callback=link_callback
+        link_callback=link_callback,
     )
-    
+
     if pisa_status.err:
         raise ValidationError(_("Erreur lors de la génération du rendu PDF."))
-        
+
     return output.getvalue()
 
 
@@ -140,7 +155,9 @@ class InvoiceListView(LoginRequiredMixin, ListView):
         q = self.request.GET.get("q")
         status = self.request.GET.get("status")
         if q:
-            qs = qs.filter(reference__icontains=q) | qs.filter(client__nom__icontains=q)
+            qs = qs.filter(reference__icontains=q) | qs.filter(
+                client__nom__icontains=q,
+            )
         if status:
             qs = qs.filter(status=status)
         return qs
@@ -157,7 +174,8 @@ class InvoiceDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Invoice.objects.filter(owner=self.request.user).prefetch_related(
-            "lignes", "lignes__product"
+            "lignes",
+            "lignes__product",
         )
 
 
@@ -183,8 +201,13 @@ class InvoiceCreateView(LoginRequiredMixin, View):
                     formset.instance = invoice
                     formset.save()
             except ValidationError as error:
-                formset._non_form_errors = formset.error_class(error.messages)
-                return render(request, self.template_name, {"form": form, "formset": formset})
+                # Utilisation de la méthode officielle pour les erreurs du formset
+                if not formset._non_form_errors:  # noqa: SLF001
+                    formset._non_form_errors = formset.error_class()  # noqa: SLF001
+                formset._non_form_errors.extend(error.messages)  # noqa: SLF001
+                return render(
+                    request, self.template_name, {"form": form, "formset": formset},
+                )
             messages.success(request, _("Facture créée avec succès."))
             return redirect(reverse("invoices:detail", kwargs={"pk": invoice.pk}))
 
@@ -200,16 +223,22 @@ class InvoiceUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk):
         invoice = self.get_object(request, pk)
         form = InvoiceForm(instance=invoice, owner=request.user)
-        formset = InvoiceLineFormSet(instance=invoice, form_kwargs={"owner": request.user})
+        formset = InvoiceLineFormSet(
+            instance=invoice, form_kwargs={"owner": request.user},
+        )
         return render(
-            request, self.template_name, {"form": form, "formset": formset, "invoice": invoice}
+            request,
+            self.template_name,
+            {"form": form, "formset": formset, "invoice": invoice},
         )
 
     def post(self, request, pk):
         invoice = self.get_object(request, pk)
         form = InvoiceForm(request.POST, instance=invoice, owner=request.user)
         formset = InvoiceLineFormSet(
-            request.POST, instance=invoice, form_kwargs={"owner": request.user}
+            request.POST,
+            instance=invoice,
+            form_kwargs={"owner": request.user},
         )
 
         if form.is_valid() and formset.is_valid():
@@ -219,15 +248,22 @@ class InvoiceUpdateView(LoginRequiredMixin, View):
                     form.save()
                     formset.save()
             except ValidationError as error:
-                formset._non_form_errors = formset.error_class(error.messages)
+                # Utilisation de la méthode officielle pour les erreurs du formset
+                if not formset._non_form_errors:  # noqa: SLF001
+                    formset._non_form_errors = formset.error_class()  # noqa: SLF001
+                formset._non_form_errors.extend(error.messages)  # noqa: SLF001
                 return render(
-                    request, self.template_name, {"form": form, "formset": formset, "invoice": invoice}
+                    request,
+                    self.template_name,
+                    {"form": form, "formset": formset, "invoice": invoice},
                 )
             messages.success(request, _("Facture mise à jour."))
             return redirect(reverse("invoices:detail", kwargs={"pk": invoice.pk}))
 
         return render(
-            request, self.template_name, {"form": form, "formset": formset, "invoice": invoice}
+            request,
+            self.template_name,
+            {"form": form, "formset": formset, "invoice": invoice},
         )
 
 
@@ -237,7 +273,8 @@ class InvoiceLineAddView(LoginRequiredMixin, View):
     def get(self, request):
         index = int(request.GET.get("index", 0))
         empty_form = InvoiceLineFormSet(
-            instance=Invoice(), form_kwargs={"owner": request.user}
+            instance=Invoice(),
+            form_kwargs={"owner": request.user},
         ).empty_form
         empty_form.prefix = empty_form.prefix.replace("__prefix__", str(index))
         return render(request, "invoices/_line_row.html", {"form": empty_form})
@@ -261,8 +298,13 @@ class InvoicePDFView(LoginRequiredMixin, View):
     """Generate and download a PDF representation of an invoice."""
 
     def get(self, request, pk):
-        queryset = Invoice.objects.filter(owner=request.user).select_related("client", "owner")
+        queryset = Invoice.objects.filter(owner=request.user).select_related(
+            "client", "owner",
+        )
         invoice = get_object_or_404(queryset.prefetch_related("lignes"), pk=pk)
         response = HttpResponse(_invoice_pdf(invoice), content_type="application/pdf")
-        response["Content-Disposition"] = f'attachment; filename="facture-{invoice.reference}.pdf"'
+        response["Content-Disposition"] = (
+            f'attachment; filename="facture-{invoice.reference}.pdf"'
+        )
         return response
+

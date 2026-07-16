@@ -18,16 +18,26 @@ class Invoice(models.Model):
         CANCELLED = "cancelled", _("Annulée")
 
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("propriétaire")
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("propriétaire"),
     )
     client = models.ForeignKey(
-        Client, on_delete=models.PROTECT, related_name="invoices", verbose_name=_("client")
+        Client,
+        on_delete=models.PROTECT,
+        related_name="invoices",
+        verbose_name=_("client"),
     )
-    reference = models.CharField(_("référence"), max_length=30, unique=True, editable=False)
+    reference = models.CharField(
+        _("référence"), max_length=30, unique=True, editable=False,
+    )
     date_emission = models.DateField(_("date d'émission"))
     date_echeance = models.DateField(_("date d'échéance"))
     status = models.CharField(
-        _("statut"), max_length=10, choices=Status.choices, default=Status.DRAFT
+        _("statut"),
+        max_length=10,
+        choices=Status.choices,
+        default=Status.DRAFT,
     )
     notes = models.TextField(_("notes"), blank=True)
     created_at = models.DateTimeField(_("créée le"), auto_now_add=True)
@@ -56,7 +66,10 @@ class Invoice(models.Model):
 
 class InvoiceLine(models.Model):
     invoice = models.ForeignKey(
-        Invoice, on_delete=models.CASCADE, related_name="lignes", verbose_name=_("facture")
+        Invoice,
+        on_delete=models.CASCADE,
+        related_name="lignes",
+        verbose_name=_("facture"),
     )
     product = models.ForeignKey(
         Product,
@@ -72,7 +85,9 @@ class InvoiceLine(models.Model):
         max_length=255,
         help_text=_("Pré-rempli depuis le produit sélectionné, modifiable librement."),
     )
-    quantite = models.DecimalField(_("quantité"), max_digits=10, decimal_places=2, default=1)
+    quantite = models.DecimalField(
+        _("quantité"), max_digits=10, decimal_places=2, default=1,
+    )
     prix_unitaire = models.DecimalField(
         _("prix unitaire"),
         max_digits=12,

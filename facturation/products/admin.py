@@ -13,7 +13,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["nom", "category", "prix_unitaire", "gere_stock", "stock", "actif", "owner"]
+    list_display = [
+        "nom",
+        "category",
+        "prix_unitaire",
+        "gere_stock",
+        "stock",
+        "actif",
+        "owner",
+    ]
     list_filter = ["actif", "gere_stock", "category"]
     search_fields = ["nom", "category__nom"]
     readonly_fields = ["created_at", "updated_at"]

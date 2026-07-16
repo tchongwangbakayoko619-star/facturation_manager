@@ -9,7 +9,6 @@ from django.views.generic import ListView
 from django.views.generic import UpdateView
 
 from facturation.core.mixins import OwnerRequiredMixin
-from facturation.core.mixins import SuperuserRequiredMixin
 
 from .forms import ClientForm
 from .models import Client
@@ -62,9 +61,9 @@ class ClientDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     model = Client
     template_name = "clients/client_confirm_delete.html"
     success_url = reverse_lazy("clients:list")
-    superuser_bypass = True  
+    superuser_bypass = True
 
     def form_valid(self, form):
-        response = super().form_valid(form) 
-        messages.success(self.request, _("Client supprimé.")) 
+        response = super().form_valid(form)
+        messages.success(self.request, _("Client supprimé."))
         return response

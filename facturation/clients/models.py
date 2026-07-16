@@ -1,5 +1,5 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -12,7 +12,9 @@ class Client(models.Model):
     telephone = models.CharField(_("Téléphone"), max_length=20, blank=True, default="")
     adresse = models.TextField(_("Adresse"), blank=True, default="")
     ville = models.CharField(_("Ville"), max_length=100, blank=True, default="")
-    code_postal = models.CharField(_("Code postal"), max_length=20, blank=True, default="")
+    code_postal = models.CharField(
+        _("Code postal"), max_length=20, blank=True, default="",
+    )
     pays = models.CharField(_("Pays"), max_length=50, blank=True, default="France")
 
     owner = models.ForeignKey(
